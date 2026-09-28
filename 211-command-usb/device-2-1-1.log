@@ -3,26 +3,26 @@
 устройство: 2e8a:000a
 серийный номер: 5303284748B5861C
 порт: /dev/ttyACM0
-начало: 2026-09-28T17:54:12
+начало: 2026-09-28T18:17:53
    0.000 --> enable
-   0.131 <-- enable
-   0.131 <-- dbg read_line:67 got enable
-   0.132 <-- inf handle_command:30 led on
-   2.136 --> disable
-   2.292 <-- disable
-   2.292 <-- dbg read_line:67 got disable
-   2.293 <-- inf handle_command:35 led off
-   4.296 --> info
-   4.392 <-- info
-   4.393 <-- dbg read_line:67 got info
-   4.393 <-- project: 221-command-usb
-   4.394 <-- repo: https://github.com/VariPor/es-student
-   4.394 <-- board: pico
-   4.394 <-- serial: 5303284748B5861C
-   4.395 <-- chip: manufacturer 0x927, part 0x0002, revision 2
-   4.395 <-- pico-sdk: 2.3.0
-   6.399 --> nosuchcommand
-   6.674 <-- nosuchcommand
-   6.674 <-- dbg read_line:67 got nosuchcommand
-   6.675 <-- err handle_command:47 unknown command: nosuchcommand
+   0.137 <-- enable
+   0.137 <-- dbg read_line:67 got enable
+   0.138 <-- inf handle_command:30 led on
+   2.141 --> disable
+   2.298 <-- disable
+   2.298 <-- dbg read_line:67 got disable
+   2.299 <-- inf handle_command:35 led off
+   4.301 --> info
+   4.398 <-- info
+   4.399 <-- dbg read_line:67 got info
+   4.399 <-- project: 211-command-usb
+   4.400 <-- repo: https://github.com/VariPor/es-student
+   4.400 <-- board: pico
+   4.401 <-- serial: 5303284748B5861C
+   4.401 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   4.401 <-- pico-sdk: 2.3.0
+   6.405 --> nosuchcommand
+   6.680 <-- nosuchcommand
+   6.680 <-- dbg read_line:67 got nosuchcommand
+   6.681 <-- err handle_command:47 unknown command: nosuchcommand
 итог: отправлено команд 4, принято строк 17
