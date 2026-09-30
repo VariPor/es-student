@@ -36,7 +36,7 @@ void mem_info(void)
     // image — от __flash_binary_start до __flash_binary_end
     row("image", (uintptr_t)&__flash_binary_start, (uintptr_t)&__flash_binary_end);
     // free  — от __flash_binary_end до конца флеш-памяти
-    row("free", (uintptr_t)&__flash_binary_end, (uintptr_t)(SRAM_END));
+    row("free", (uintptr_t)&__flash_binary_end, (uintptr_t)(PICO_FLASH_SIZE_BYTES + XIP_BASE));
     // boot2 — от __boot2_start__ до __boot2_end__
     row("boot2", (uintptr_t)&__boot2_start__, (uintptr_t)&__boot2_end__);
     // text  — от __boot2_end__ до __etext: код и константы
