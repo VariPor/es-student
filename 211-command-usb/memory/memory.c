@@ -122,7 +122,7 @@ void fw_info(void)
     // stack_variable — адрес и значение
     printf("%-20s 0x%08x %u\n", "stack_variable", &stack_variable, stack_variable);
     // heap_variable  — адрес и значение
-    printf("%-20s 0x%08x %u\n", "heap_variable", &heap_variable, *heap_variable);
+    printf("%-20s 0x%08x %u\n", "heap_variable", heap_variable, *heap_variable);
     // возвращаем блок кучи
     free(heap_variable);
 }
