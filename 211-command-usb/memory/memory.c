@@ -1,4 +1,7 @@
 #include "memory.h"
+#include "command.h"
+#include "device.h"
+#include <stdlib.h>
 
 extern char __flash_binary_start;
 extern char __flash_binary_end;
@@ -12,6 +15,9 @@ extern char __bss_end__;
 extern char __HeapLimit;
 extern char __StackBottom;
 extern char __StackTop;
+
+uint32_t data_variable = 100;
+uint32_t bss_variable;
 
 static void row(const char *name, uintptr_t start, uintptr_t end)
 {
@@ -72,4 +78,51 @@ void mem_info(void)
     const uint heap_free = &__HeapLimit - &__bss_end__;
     const uint stack_free = &__StackTop - &__StackBottom;
     printf("  ram free    %8u for heap and %u for stack\n", heap_free, stack_free);
+}
+
+int main(void);
+
+void fw_info(void)
+{
+    // считаем вызов: data_variable и bss_variable на единицу больше
+    data_variable += 1;
+    bss_variable += 1;
+
+    // адреса функций со сброшенным признаком Thumb
+    uint16_t *main_code = (uint16_t *)((uintptr_t)main & ~1u);
+    uint16_t *fw_info_code = (uint16_t *)((uintptr_t)fw_info & ~1u);
+    // локальная переменная и блок из кучи
+    uint32_t stack_variable = 1946;
+    uint32_t *heap_variable = malloc(sizeof(uint32_t));
+
+    if (heap_variable != NULL)
+    {
+        *heap_variable = 1951;
+    }
+
+    // шапка: объект, адрес, значение
+    printf("%-20s %-10s %-10s\n", "object", "address", "value");
+    // main, fw_info  — адрес с признаком Thumb и два байта по сброшенному адресу
+    printf("%-20s 0x%08x 0x%x\n", "main", (uintptr_t)main, *main_code);
+    printf("%-20s 0x%08x 0x%x\n", "fw_info", (uintptr_t)fw_info, *fw_info_code);
+    // commands       — адрес массива
+    printf("%-20s 0x%08x\n", "commands", (uintptr_t)&commands);
+    // обработчики    — имя команды и адрес обработчика, строкой на команду
+    for (uint i = 0; i < command_count; ++i)
+    {
+        printf(" - %-17s 0x%08x\n", commands[i].name, (uintptr_t)commands[i].handler);
+    }
+    // константы      — адрес и значение строк паспорта из device.h
+    printf("%-20s 0x%08x %-10s\n", "DEVICE_PROJECT", &DEVICE_PROJECT, DEVICE_PROJECT);
+    printf("%-20s 0x%08x %-10s\n", "DEVICE_BOARD", &DEVICE_BOARD, DEVICE_BOARD);
+    // data_variable  — адрес и значение, секция .data
+    printf("%-20s 0x%08x %u\n", "data_variable", &data_variable, data_variable);
+    // bss_variable   — адрес и значение, секция .bss
+    printf("%-20s 0x%08x %u\n", "bss_variable", &bss_variable, bss_variable);
+    // stack_variable — адрес и значение
+    printf("%-20s 0x%08x %u\n", "stack_variable", &stack_variable, stack_variable);
+    // heap_variable  — адрес и значение
+    printf("%-20s 0x%08x %u\n", "heap_variable", &heap_variable, *heap_variable);
+    // возвращаем блок кучи
+    free(heap_variable);
 }
