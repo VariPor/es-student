@@ -1,0 +1,63 @@
+задание: 2.2.2
+проект: 221-command-time
+устройство: 2e8a:000a
+серийный номер: 5303284748B5861C
+порт: /dev/ttyACM0
+начало: 2026-10-06T16:11:09
+   0.000 --> uptime
+   0.001 <-- uptime
+   0.001 <-- dbg read_line:114 got uptime
+   0.001 <-- uptime: 81928 ms
+   0.402 --> boot_info
+   0.402 <-- boot_info
+   0.403 <-- dbg read_line:114 got boot_info
+   0.403 <-- vector table         0x10000100
+   0.404 <-- stack top            0x20042000
+   0.404 <-- reset                0x100001f7
+   0.405 <-- reset (even)         0x100001f6
+   0.405 <-- gpio in              0xd0000004
+   0.405 <-- led bit              0
+   0.405 <-- gpio_get             0
+   0.806 --> uptime
+   0.806 <-- uptime
+   0.807 <-- dbg read_line:114 got uptime
+   0.807 <-- uptime: 82734 ms
+   1.208 --> boot_info
+   1.208 <-- boot_info
+   1.209 <-- dbg read_line:114 got boot_info
+   1.209 <-- vector table         0x10000100
+   1.210 <-- stack top            0x20042000
+   1.210 <-- reset                0x100001f7
+   1.210 <-- reset (even)         0x100001f6
+   1.211 <-- gpio in              0xd0000004
+   1.211 <-- led bit              0
+   1.211 <-- gpio_get             0
+   1.612 --> uptime
+   1.612 <-- uptime
+   1.612 <-- dbg read_line:114 got uptime
+   1.613 <-- uptime: 83540 ms
+   2.013 --> boot_info
+   2.014 <-- boot_info
+   2.014 <-- dbg read_line:114 got boot_info
+   2.015 <-- vector table         0x10000100
+   2.015 <-- stack top            0x20042000
+   2.016 <-- reset                0x100001f7
+   2.016 <-- reset (even)         0x100001f6
+   2.016 <-- gpio in              0xd0000004
+   2.017 <-- led bit              1
+   2.017 <-- gpio_get             1
+   2.418 --> uptime
+   2.418 <-- uptime
+   2.419 <-- dbg read_line:114 got uptime
+   2.419 <-- uptime: 84346 ms
+   2.820 --> boot_info
+   2.820 <-- boot_info
+   2.821 <-- dbg read_line:114 got boot_info
+   2.821 <-- vector table         0x10000100
+   2.821 <-- stack top            0x20042000
+   2.822 <-- reset                0x100001f7
+   2.822 <-- reset (even)         0x100001f6
+   2.823 <-- gpio in              0xd0000004
+   2.823 <-- led bit              1
+   2.823 <-- gpio_get             1
+итог: отправлено команд 8, принято строк 48
