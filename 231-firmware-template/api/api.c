@@ -14,19 +14,12 @@
 typedef void (*api_callback_t)(const command_t *command);
 
 // команда прибора: имя, справка для help и обработчик
-/*typedef struct
+typedef struct
 {
     const char *name;
     const char *help;
     api_callback_t callback;
-} api_command_t;*/
-
-struct api_command_t
-{
-    const char *name;
-    const char *help;
-    api_callback_t callback;
-};
+} api_command_t;
 
 void cmd_info(const command_t *command)
 {
@@ -121,7 +114,7 @@ void cmd_main_time_reset(const command_t *command)
     printf("max reset\n");
 }
 
-const struct api_command_t commands[] = {
+const api_command_t commands[] = {
     {"info", "device passport", cmd_info},
     {"uptime", "time since reset", cmd_uptime},
     {"calc_pi", "calculate pi: calc_pi [terms]", cmd_calc_pi},
