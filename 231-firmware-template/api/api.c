@@ -9,6 +9,7 @@
 #include "device.h"
 #include "pico/stdlib.h"
 #include "profiling.h"
+#include "led-task.h"
 
 // обработчик команды: получает имя и аргументы
 typedef void (*api_callback_t)(const command_t *command);
@@ -29,7 +30,7 @@ void cmd_info(const command_t *command)
 
 void cmd_uptime(const command_t *command)
 {
-    printf("uptime: %i ms\n", time_us_64() / 1000);
+    printf("uptime: %u ms\n", (unsigned int)(time_us_64() / 1000));
 }
 
 // Число без знака из десятичной записи. false - в записи не только цифры
@@ -83,7 +84,7 @@ void cmd_calc_pi(const command_t *command)
     uint terms = CALC_PI_TERMS;
     if (command->argc != 0)
     {
-        if (!parse_u32(command->argv[0], &terms))
+        if (!parse_u32(command->argv[0], (uint32_t *)&terms))
         {
             printf("error: usage calc_pi [terms]\n");
             return;
@@ -114,13 +115,62 @@ void cmd_main_time_reset(const command_t *command)
     printf("max reset\n");
 }
 
+void print_led_state(void)
+{
+    char *led_state_string[] = {"off", "on", "blink"};
+    printf("led: %s, period %u ms\n",
+           led_state_string[led_task_get_state()], (unsigned int)led_task_get_period_ms());
+}
+
+void cmd_led_enable(const command_t *command)
+{
+    led_task_set_state(LED_STATE_ON);
+    print_led_state();
+}
+
+void cmd_led_disable(const command_t *command)
+{
+    led_task_set_state(LED_STATE_OFF);
+    print_led_state();
+}
+
+void cmd_led_blink(const command_t *command)
+{
+    led_task_set_state(LED_STATE_BLINK);
+    print_led_state();
+}
+
+void cmd_led_period(const command_t *command)
+{
+    uint32_t period_ms;
+
+    if (command->argc != 1 || !parse_u32(command->argv[0], &period_ms))
+    {
+        printf("error: usage led_period <period_ms>\n");
+        return;
+    }
+
+    // годится ли такой период, решает задача светодиода
+    if (!led_task_set_period_ms(period_ms))
+    {
+        printf("error: period_ms must be greater than 0\n");
+        return;
+    }
+
+    // ответ: состояние и период светодиода
+    print_led_state();
+}
+
 const api_command_t commands[] = {
     {"info", "device passport", cmd_info},
     {"uptime", "time since reset", cmd_uptime},
     {"calc_pi", "calculate pi: calc_pi [terms]", cmd_calc_pi},
     {"main_time_exec", "superloop iteration: average and maximum", cmd_main_time_exec},
     {"main_time_reset", "reset maximum iteration", cmd_main_time_reset},
-};
+    {"led_enable", "enable led", cmd_led_enable},
+    {"led_disable", "disable led", cmd_led_disable},
+    {"led_blink", "set led blink", cmd_led_blink},
+    {"led_period", "set led period: led_period [period_ms]", cmd_led_period}};
 
 static const uint api_command_count = sizeof(commands) / sizeof(commands[0]);
 
