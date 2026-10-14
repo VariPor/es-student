@@ -2,6 +2,14 @@
 #include "pico/stdlib.h"
 #include "led-task.h"
 
+typedef enum
+{
+    BUTTON_STATE_RELEASED,
+    BUTTON_STATE_IS_PRESSING,
+    BUTTON_STATE_PRESSED,
+    BUTTON_STATE_IS_RELEASING
+} button_state_t;
+
 static button_state_t button_state;
 static uint32_t press_count = 0;
 static const uint64_t DEBOUNCE_US = 20000;
