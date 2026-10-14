@@ -8,6 +8,7 @@
 #include "api.h"
 #include "stdio-text-protocol.h"
 #include "led-task.h"
+#include "button-task.h"
 
 int main()
 {
@@ -19,12 +20,14 @@ int main()
     stdio_text_protocol_init();
 
     led_task_init();
+    button_task_init();
     while (1)
     {
         // учитываем прошлую итерацию
         profiling_iteration();
-        // мигаем светодиодом
+
         led_task_handle();
+        button_task_handle();
         // принятая строка становится командой, команда - действием прибора
         const command_t *command = stdio_text_protocol_handle();
         if (command != NULL)

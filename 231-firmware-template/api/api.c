@@ -10,6 +10,7 @@
 #include "pico/stdlib.h"
 #include "profiling.h"
 #include "led-task.h"
+#include "button-task.h"
 
 // обработчик команды: получает имя и аргументы
 typedef void (*api_callback_t)(const command_t *command);
@@ -161,6 +162,16 @@ void cmd_led_period(const command_t *command)
     print_led_state();
 }
 
+void cmd_button(const command_t *command)
+{
+    char state[] = "released";
+    if (button_task_is_pressed())
+    {
+        strcpy(state, "pressed");
+    }
+    printf("button: %s, presses %u\n", state, (unsigned int)button_task_get_press_count());
+}
+
 const api_command_t commands[] = {
     {"info", "device passport", cmd_info},
     {"uptime", "time since reset", cmd_uptime},
@@ -170,7 +181,8 @@ const api_command_t commands[] = {
     {"led_enable", "enable led", cmd_led_enable},
     {"led_disable", "disable led", cmd_led_disable},
     {"led_blink", "set led blink", cmd_led_blink},
-    {"led_period", "set led period: led_period [period_ms]", cmd_led_period}};
+    {"led_period", "set led period: led_period [period_ms]", cmd_led_period},
+    {"button", "button info", cmd_button}};
 
 static const uint api_command_count = sizeof(commands) / sizeof(commands[0]);
 
