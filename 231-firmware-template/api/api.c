@@ -28,7 +28,7 @@ void cmd_info(const command_t *command)
 {
     // печатаем паспорт устройства
     struct device_info_t info;
-    device_info(&info);
+    device_get_info(&info);
     printf("project: %s\n", DEVICE_PROJECT);
     printf("repo: %s\n", DEVICE_REPO);
     printf("board: %s\n", info.device_board);

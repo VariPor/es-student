@@ -31,4 +31,4 @@ struct device_info_t
     unsigned int revision;                                       // ревизия кристалла
 };
 
-void device_info(struct device_info_t *info);
+void device_get_info(struct device_info_t *info);
