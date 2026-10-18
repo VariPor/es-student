@@ -1,8 +1,8 @@
-#include "stdio-text-protocol.h"
+#include "stdio-text-protocol/stdio-text-protocol.h"
 
 #include "pico/stdlib.h"
 #include <stdio.h>
-#include "log.h"
+#include "logging/log.h"
 
 static char line[STDIO_TEXT_PROTOCOL_LINE_SIZE];
 static uint line_length = 0;

@@ -2,6 +2,7 @@
 
 #include "hardware/gpio.h"
 #include "pico/stdlib.h"
+#include "systime/systime.h"
 
 // Состояние задачи: внутреннее связывание, только для этого файла
 static led_state_t led_state;
@@ -36,27 +37,6 @@ void led_task_init(void)
     gpio_set_dir(LED_PIN, GPIO_OUT);
     half_period_us = 1000 * 1000 / 2;
     led_task_set_state(LED_STATE_BLINK);
-}
-
-bool period_elapsed(uint64_t *last_us, uint64_t period_us)
-{
-    uint64_t now_us = time_us_64();
-
-    if (now_us - *last_us < period_us)
-    {
-        return false;
-    }
-
-    // Следующее срабатывание отсчитывается от прошлого, а не от "сейчас"
-    *last_us += period_us;
-
-    // Отстали больше чем на период: не догонять, а начать отсчёт заново
-    if (now_us - *last_us >= period_us)
-    {
-        *last_us = now_us;
-    }
-
-    return true;
 }
 
 void led_task_set_state(led_state_t state)
@@ -98,7 +78,7 @@ void led_task_handle(void)
         // Светодиод установлен при входе в состояние, делать нечего
         break;
     case LED_STATE_BLINK:
-        if (period_elapsed(&last_toggle_us, half_period_us))
+        if (systime_period_elapsed(&last_toggle_us, half_period_us))
         {
             led_set(!gpio_get(PICO_DEFAULT_LED_PIN));
         }

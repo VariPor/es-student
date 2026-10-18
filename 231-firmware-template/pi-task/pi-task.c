@@ -1,5 +1,6 @@
 #include "pi-task.h"
 #include "pico/stdlib.h"
+#include "systime/systime.h"
 
 // расчёт одного члена ряда около 585 тактов
 // при 125 МГц это около 4,7 мкс
@@ -27,7 +28,7 @@ bool pi_task_start(uint32_t n)
     pi_sum = 0;
     pi_sign = 1.0;
     pi_state = PI_STATE_RUNNING;
-    start_time = time_us_64();
+    start_time = systime_us();
     return true;
 }
 
@@ -54,7 +55,7 @@ void pi_task_handle(void)
     {
         pi_result = 4.0 * pi_sum;
         pi_state = PI_STATE_READY;
-        end_time = time_us_64();
+        end_time = systime_us();
     }
 }
 

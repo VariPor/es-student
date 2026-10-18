@@ -3,12 +3,6 @@
 #include "pico/unique_id.h"
 #include "pico/version.h"
 
-#define DEVICE_NAME "es-firmare-template"
-#define FIRMWARE_VERSION "1.2.0"
-
-#define DEVICE_PROJECT "231-firmware-template"
-#define DEVICE_REPO "https://github.com/VariPor/es-student"
-
 #ifndef DEVICE_BOARD
 #define DEVICE_BOARD "unknown"
 #endif

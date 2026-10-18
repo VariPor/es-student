@@ -1,6 +1,8 @@
 #include "button-task.h"
 #include "pico/stdlib.h"
 #include "led-task.h"
+#include "logging/log.h"
+#include "systime/systime.h"
 
 typedef enum
 {
@@ -29,7 +31,7 @@ void button_task_handle(void)
     // читаем уровень: нажатая кнопка замыкает вывод на землю и даёт ноль
     bool state = gpio_get(BUTTON_PIN);
     // читаем часы
-    uint64_t current_time = time_us_64();
+    uint64_t current_time = systime_us();
 
     switch (button_state)
     {
@@ -48,13 +50,15 @@ void button_task_handle(void)
     {
         if (!state && (current_time - last_time_toggle >= DEBOUNCE_US))
         {
-            state = BUTTON_STATE_PRESSED;
+            button_state = BUTTON_STATE_PRESSED;
             press_count += 1;
             led_task_next_state();
+            //last_time_toggle = current_time;
         }
-        if (state && (current_time - last_time_toggle >= DEBOUNCE_US))
+        if (state)
         {
-            state = BUTTON_STATE_RELEASED;
+            button_state = BUTTON_STATE_RELEASED;
+            last_time_toggle = current_time;
         }
         break;
     }
@@ -62,11 +66,13 @@ void button_task_handle(void)
     {
         if (state && (current_time - last_time_toggle >= DEBOUNCE_US))
         {
-            state = BUTTON_STATE_RELEASED;
+            button_state = BUTTON_STATE_RELEASED;
+            last_time_toggle = current_time;
         }
-        if (!state && (current_time - last_time_toggle >= DEBOUNCE_US))
+        if (!state)
         {
-            state = BUTTON_STATE_PRESSED;
+            button_state = BUTTON_STATE_PRESSED;
+            last_time_toggle = current_time;
         }
         break;
     }

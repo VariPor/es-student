@@ -6,12 +6,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "device.h"
+#include "device/device.h"
 #include "pico/stdlib.h"
-#include "profiling.h"
+#include "profiling/profiling.h"
 #include "led-task.h"
 #include "button-task.h"
 #include "pi-task.h"
+#include "firmware.h"
+#include "systime/systime.h"
 
 // обработчик команды: получает имя и аргументы
 typedef void (*api_callback_t)(const command_t *command);
@@ -29,8 +31,8 @@ void cmd_info(const command_t *command)
     // печатаем паспорт устройства
     struct device_info_t info;
     device_get_info(&info);
-    printf("project: %s\n", DEVICE_PROJECT);
-    printf("repo: %s\n", DEVICE_REPO);
+    printf("project: %s\n", FIRMWARE_PROJECT);
+    printf("repo: %s\n", FIRMWARE_REPO);
     printf("board: %s\n", info.device_board);
     printf("serial: %s\n", info.serial_number);
     printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n", info.manufacturer, info.part, info.revision);
@@ -39,7 +41,7 @@ void cmd_info(const command_t *command)
 
 void cmd_uptime(const command_t *command)
 {
-    printf("uptime: %u ms\n", (unsigned int)(time_us_64() / 1000));
+    printf("uptime: %llu ms\n", systime_ms());
 }
 
 // Число без знака из десятичной записи. false - в записи не только цифры
@@ -170,6 +172,7 @@ void cmd_pi(const command_t *command)
 
 void cmd_profiling(const command_t *command)
 {
+    #if PROFILING_ENABLED
     for (unsigned int i = 0; i < STOPWATCHES_COUNT; ++i)
     {
         struct profiling_result_t result;
@@ -178,6 +181,9 @@ void cmd_profiling(const command_t *command)
                result.name, (unsigned int)result.count,
                result.mean, (unsigned int)result.max_us);
     }
+    #else
+    printf("profiling is disabled in this build\n");
+    #endif
 }
 
 void cmd_profiling_reset(const command_t *command)
