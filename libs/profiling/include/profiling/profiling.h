@@ -5,8 +5,8 @@
 #define PROFILING_ENABLED 1
 #endif
 
-#include "pico/types.h"
-
+#include <stdint.h>
+#include <stdbool.h>
 
 enum
 {

@@ -1,8 +1,5 @@
 #pragma once
 
-#include "pico/unique_id.h"
-#include "pico/version.h"
-
 #ifndef DEVICE_BOARD
 #define DEVICE_BOARD "unknown"
 #endif
@@ -18,11 +15,11 @@ struct info_t
 
 struct device_info_t
 {
-    char device_board[8];                                        // тип платы
-    char serial_number[PICO_UNIQUE_BOARD_ID_SIZE_BYTES * 2 + 1]; // серийный номер
-    unsigned int manufacturer;                                   // производитель
-    unsigned int part;                                           // изделие кристалла
-    unsigned int revision;                                       // ревизия кристалла
+    char device_board[8];      // тип платы
+    char serial_number[17];    // серийный номер
+    unsigned int manufacturer; // производитель
+    unsigned int part;         // изделие кристалла
+    unsigned int revision;     // ревизия кристалла
 };
 
 void device_get_info(struct device_info_t *info);
