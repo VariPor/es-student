@@ -7,7 +7,6 @@
 #include <string.h>
 
 #include "device/device.h"
-#include "pico/stdlib.h"
 #include "profiling/profiling.h"
 #include "led-task/led-task.h"
 #include "button-task/button-task.h"
@@ -25,7 +24,6 @@ static void cmd_info(const command_t *command)
     printf("board: %s\n", info.device_board);
     printf("serial: %s\n", info.serial_number);
     printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n", info.manufacturer, info.part, info.revision);
-    printf("pico-sdk: %s\n", PICO_SDK_VERSION_STRING);
 }
 
 static void cmd_uptime(const command_t *command)
