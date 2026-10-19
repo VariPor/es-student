@@ -1,5 +1,4 @@
 #include "pi-task.h"
-#include "pico/stdlib.h"
 #include "systime/systime.h"
 
 // расчёт одного члена ряда около 585 тактов

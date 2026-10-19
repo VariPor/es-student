@@ -1,3 +1,4 @@
+#include "api/api.h"
 #include "api/api-commands.h"
 
 #include <stdint.h>

@@ -1,7 +1,5 @@
 #include "led-task/led-task.h"
 
-#include "hardware/gpio.h"
-#include "pico/stdlib.h"
 #include "systime/systime.h"
 #include "platform/platform.h"
 
