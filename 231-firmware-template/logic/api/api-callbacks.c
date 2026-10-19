@@ -19,11 +19,14 @@ static void cmd_info(const command_t *command)
     // печатаем паспорт устройства
     struct device_info_t info;
     device_get_info(&info);
+    printf("name: %s\n", FIRMWARE_NAME);
+    printf("version: %s\n", FIRMWARE_VERSION);
     printf("project: %s\n", FIRMWARE_PROJECT);
     printf("repo: %s\n", FIRMWARE_REPO);
     printf("board: %s\n", info.device_board);
     printf("serial: %s\n", info.serial_number);
     printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n", info.manufacturer, info.part, info.revision);
+    printf("pico-sdk: %s\n", info.pico_sdk_version);
 }
 
 static void cmd_uptime(const command_t *command)
@@ -176,6 +179,7 @@ static void cmd_profiling(const command_t *command)
 static void cmd_profiling_reset(const command_t *command)
 {
     profiling_reset();
+    printf("profiling reset\n");
 }
 
 const api_command_t api_commands[] = {

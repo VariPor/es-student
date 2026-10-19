@@ -20,6 +20,7 @@ struct device_info_t
     unsigned int manufacturer; // производитель
     unsigned int part;         // изделие кристалла
     unsigned int revision;     // ревизия кристалла
+    char pico_sdk_version[12];
 };
 
 void device_get_info(struct device_info_t *info);

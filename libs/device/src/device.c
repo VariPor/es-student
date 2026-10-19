@@ -5,6 +5,7 @@
 #include <string.h>
 #include "hardware/regs/sysinfo.h"
 #include "hardware/regs/addressmap.h"
+#include "pico/unique_id.h"
 
 void device_get_info(struct device_info_t *info)
 {
@@ -21,4 +22,5 @@ void device_get_info(struct device_info_t *info)
 
        info->revision = (unsigned int)((id & SYSINFO_CHIP_ID_REVISION_BITS) >>
                                        SYSINFO_CHIP_ID_REVISION_LSB);
+       strcpy(info->pico_sdk_version, PICO_SDK_VERSION_STRING);
 }
