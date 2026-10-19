@@ -10,7 +10,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     include
 )
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
     pico_stdlib
+PUBLIC
     logging
 )

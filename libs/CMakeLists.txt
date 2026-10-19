@@ -10,8 +10,9 @@ add_subdirectory(profiling)
 add_subdirectory(systime)
 add_subdirectory(stdio-text-protocol)
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
     pico_stdlib
+PUBLIC
     device
     logging
     profiling

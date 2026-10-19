@@ -15,19 +15,6 @@ target_compile_definitions(profiling PUBLIC
 )
 add_compile_options(-Wall)
 
-# железо прибора: единственное место проекта с SDK
-add_library(platform STATIC
-    platform/platform.c
-)
-
-target_include_directories(platform PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-target_link_libraries(platform PRIVATE
-    pico_stdlib
-)
-
 # логика прибора: задачи и команды, без SDK
 add_library(logic STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/api/api.c
@@ -51,6 +38,21 @@ PUBLIC
     stdio_text_protocol
 )
 
+# железо прибора: единственное место проекта с SDK
+add_library(platform STATIC
+    platform/platform.c
+)
+
+target_include_directories(platform PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(platform PRIVATE
+    pico_stdlib
+)
+
+
+
 add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
 )
@@ -66,6 +68,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     stdio_text_protocol
     logic
     platform
+    pico_stdlib
 )
 
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
