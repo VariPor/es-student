@@ -11,7 +11,7 @@ pico_sdk_init()
 
 add_subdirectory(../libs ${CMAKE_BINARY_DIR}/libs)
 target_compile_definitions(profiling PUBLIC
-    PROFILING_ENABLED=0
+    PROFILING_ENABLED=1
 )
 add_compile_options(-Wall)
 

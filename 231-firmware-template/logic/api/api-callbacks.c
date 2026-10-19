@@ -113,7 +113,7 @@ static void cmd_button(const command_t *command)
 
 // прикидка: за член ряда 4 операции с double: 175 + 110 + 190 + 110 = 585
 // 1e6 членов по 585 тактов при 125 МГц  - около 4,7 с
-static const uint CALC_PI_TERMS = 1000000;
+static const uint64_t CALC_PI_TERMS = 1000000;
 
 static void cmd_pi_start(const command_t *command)
 {

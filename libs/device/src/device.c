@@ -21,9 +21,4 @@ void device_get_info(struct device_info_t *info)
 
        info->revision = (unsigned int)((id & SYSINFO_CHIP_ID_REVISION_BITS) >>
                                        SYSINFO_CHIP_ID_REVISION_LSB);
-       /*printf("decice name: %s\n", DEVICE_NAME);
-       printf("firmware version: %s\n", FIRMWARE_VERSION);
-       printf("project: %s\n", DEVICE_PROJECT);
-       printf("repo: %s\n", DEVICE_REPO);
-       printf("pico-sdk: %s\n", PICO_SDK_VERSION_STRING);*/
 }
