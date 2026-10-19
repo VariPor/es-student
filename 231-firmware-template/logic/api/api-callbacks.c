@@ -1,32 +1,21 @@
-#include "api.h"
+#include "api/api-commands.h"
 
-#include <stdint.h>
-#include <string.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
+
 #include "device/device.h"
 #include "pico/stdlib.h"
 #include "profiling/profiling.h"
-#include "led-task.h"
-#include "button-task.h"
-#include "pi-task.h"
+#include "led-task/led-task.h"
+#include "button-task/button-task.h"
+#include "pi-task/pi-task.h"
 #include "firmware.h"
 #include "systime/systime.h"
 
-// обработчик команды: получает имя и аргументы
-typedef void (*api_callback_t)(const command_t *command);
-
-// команда прибора: имя, справка для help и обработчик
-typedef struct
-{
-    const char *name;
-    const char *help;
-    api_callback_t callback;
-} api_command_t;
-
-void cmd_info(const command_t *command)
+static void cmd_info(const command_t *command)
 {
     // печатаем паспорт устройства
     struct device_info_t info;
@@ -39,7 +28,7 @@ void cmd_info(const command_t *command)
     printf("pico-sdk: %s\n", PICO_SDK_VERSION_STRING);
 }
 
-void cmd_uptime(const command_t *command)
+static void cmd_uptime(const command_t *command)
 {
     printf("uptime: %llu ms\n", systime_ms());
 }
@@ -68,32 +57,32 @@ static bool parse_u32(const char *text, uint32_t *value)
     return true;
 }
 
-void print_led_state(void)
+static void print_led_state(void)
 {
     char *led_state_string[] = {"off", "on", "blink"};
     printf("led: %s, period %u ms\n",
            led_state_string[led_task_get_state()], (unsigned int)led_task_get_period_ms());
 }
 
-void cmd_led_enable(const command_t *command)
+static void cmd_led_enable(const command_t *command)
 {
     led_task_set_state(LED_STATE_ON);
     print_led_state();
 }
 
-void cmd_led_disable(const command_t *command)
+static void cmd_led_disable(const command_t *command)
 {
     led_task_set_state(LED_STATE_OFF);
     print_led_state();
 }
 
-void cmd_led_blink(const command_t *command)
+static void cmd_led_blink(const command_t *command)
 {
     led_task_set_state(LED_STATE_BLINK);
     print_led_state();
 }
 
-void cmd_led_period(const command_t *command)
+static void cmd_led_period(const command_t *command)
 {
     uint32_t period_ms;
 
@@ -114,7 +103,7 @@ void cmd_led_period(const command_t *command)
     print_led_state();
 }
 
-void cmd_button(const command_t *command)
+static void cmd_button(const command_t *command)
 {
     char state[] = "released";
     if (button_task_is_pressed())
@@ -126,9 +115,9 @@ void cmd_button(const command_t *command)
 
 // прикидка: за член ряда 4 операции с double: 175 + 110 + 190 + 110 = 585
 // 1e6 членов по 585 тактов при 125 МГц  - около 4,7 с
-const uint CALC_PI_TERMS = 1000000;
+static const uint CALC_PI_TERMS = 1000000;
 
-void cmd_pi_start(const command_t *command)
+static void cmd_pi_start(const command_t *command)
 {
     uint32_t pi_n = CALC_PI_TERMS;
     if (command->argc != 0 && (command->argc != 1 || !parse_u32(command->argv[0], &pi_n)))
@@ -148,7 +137,7 @@ void cmd_pi_start(const command_t *command)
     printf("pi: started, %u terms\n", (unsigned int)pi_n);
 }
 
-void cmd_pi(const command_t *command)
+static void cmd_pi(const command_t *command)
 {
     pi_state_t state = pi_task_get_state();
     switch (state)
@@ -170,9 +159,9 @@ void cmd_pi(const command_t *command)
     }
 }
 
-void cmd_profiling(const command_t *command)
+static void cmd_profiling(const command_t *command)
 {
-    #if PROFILING_ENABLED
+#if PROFILING_ENABLED
     for (unsigned int i = 0; i < STOPWATCHES_COUNT; ++i)
     {
         struct profiling_result_t result;
@@ -181,17 +170,17 @@ void cmd_profiling(const command_t *command)
                result.name, (unsigned int)result.count,
                result.mean, (unsigned int)result.max_us);
     }
-    #else
+#else
     printf("profiling is disabled in this build\n");
-    #endif
+#endif
 }
 
-void cmd_profiling_reset(const command_t *command)
+static void cmd_profiling_reset(const command_t *command)
 {
     profiling_reset();
 }
 
-const api_command_t commands[] = {
+const api_command_t api_commands[] = {
     {"info", "device passport", cmd_info},
     {"uptime", "time since reset", cmd_uptime},
     {"led_enable", "enable led", cmd_led_enable},
@@ -204,31 +193,4 @@ const api_command_t commands[] = {
     {"profiling", "print results of profiling", cmd_profiling},
     {"profiling_reset", "reset profiling", cmd_profiling_reset}};
 
-static const uint api_command_count = sizeof(commands) / sizeof(commands[0]);
-
-void api_handle(const command_t *command)
-{
-    if (command->truncated)
-    {
-        printf("error: command longer than 63 characters or 4 arguments\n");
-        return;
-    }
-    if (strcmp(command->name, "help") == 0)
-    {
-        printf("%-20s list of commands\n", "help");
-        for (uint i = 0; i < api_command_count; ++i)
-        {
-            printf("%-20s %s\n", commands[i].name, commands[i].help);
-        }
-        return;
-    }
-    for (uint i = 0; i < api_command_count; ++i)
-    {
-        if (strcmp(commands[i].name, command->name) == 0)
-        {
-            commands[i].callback(command);
-            return;
-        }
-    }
-    printf("error: unknown command '%s', try help\n", command->name);
-}
+const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);

@@ -1,16 +1,15 @@
 #include <stdio.h>
 #include <string.h>
-#include "pico/stdlib.h"
 
 #include "logging/log.h"
-#include "device/device.h"
 #include "profiling/profiling.h"
-#include "api.h"
+#include "api/api.h"
 #include "stdio-text-protocol/stdio-text-protocol.h"
-#include "led-task.h"
-#include "button-task.h"
-#include "pi-task.h"
+#include "led-task/led-task.h"
+#include "button-task/button-task.h"
+#include "pi-task/pi-task.h"
 #include "firmware.h"
+#include "platform/platform.h"
 
 enum stopwatch_numbers
 {
@@ -25,13 +24,11 @@ int main()
 {
     LOG_INF("%s %s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
 
-    // инициализируем стандартный ввод-вывод и светодиод
-    stdio_init_all();
-
     stdio_text_protocol_init();
 
     led_task_init();
-    button_task_init();
+    button_task_init(led_task_next_state);
+    platform_init();
 
     // инициализация секундомеров
     profiling_stopwatch_init(STOPWATCH_LOOP, "loop");
