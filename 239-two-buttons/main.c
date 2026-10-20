@@ -27,8 +27,10 @@ int main()
     stdio_text_protocol_init();
 
     led_task_init();
-    button_task_init(PLATFORM_BUTTON_LED, led_task_next_state);
-    button_task_init(PLATFORM_BUTTON_PERIOD, led_task_next_period);
+    // короткое нажатие первой кнопки - следующее состояние светодиода, долгое - мигание
+    button_task_init(PLATFORM_BUTTON_LED, led_task_next_state, led_task_blink);
+    // у второй кнопки долгого действия нет
+    button_task_init(PLATFORM_BUTTON_PERIOD, led_task_next_period, NULL);
     platform_init();
 
     // инициализация секундомеров

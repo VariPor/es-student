@@ -9,7 +9,9 @@ typedef enum
     BUTTON_STATE_RELEASED,
     BUTTON_STATE_IS_PRESSING,
     BUTTON_STATE_PRESSED,
-    BUTTON_STATE_IS_RELEASING
+    BUTTON_STATE_PRESSED_LONG,
+    BUTTON_STATE_IS_RELEASING,
+    BUTTON_STATE_IS_RELEASING_LONG
 } button_state_t;
 
 typedef struct
@@ -18,23 +20,22 @@ typedef struct
     button_state_t button_state;
     uint32_t press_count;
     uint64_t last_time_toggle;
-    button_task_callback_t button_callback;
+    button_task_callback_t button_callback_short;
+    button_task_callback_t button_callback_long;
 } button_t;
 
-// static button_state_t button_state;
-// static uint32_t press_count = 0;
 static const uint64_t DEBOUNCE_US = 20000;
-// static uint64_t last_time_toggle = 0;
-// static button_task_callback_t button_callback;
+static const uint64_t LONG_PRESS_US = 1000000;
 
 static button_t buttons[PLATFORM_BUTTON_COUNT];
 
-void button_task_init(int id, button_task_callback_t on_press)
+void button_task_init(int id, button_task_callback_t on_press, button_task_callback_t long_press)
 {
     buttons[id].button_state = BUTTON_STATE_RELEASED;
     buttons[id].press_count = 0;
     buttons[id].last_time_toggle = 0;
-    buttons[id].button_callback = on_press;
+    buttons[id].button_callback_short = on_press;
+    buttons[id].button_callback_long = long_press;
 }
 
 void button_task_handle(void)
@@ -55,6 +56,38 @@ void button_task_handle(void)
                 buttons[i].button_state = BUTTON_STATE_IS_RELEASING;
                 buttons[i].last_time_toggle = current_time;
             }
+            if (is_pressed && current_time - buttons[i].last_time_toggle >= LONG_PRESS_US &&
+                buttons[i].button_callback_long != NULL)
+            {
+                if (buttons[i].button_callback_long != NULL)
+                {
+                    buttons[i].button_callback_long();
+                }
+                buttons[i].button_state = BUTTON_STATE_PRESSED_LONG;
+            }
+            break;
+        }
+        case BUTTON_STATE_PRESSED_LONG:
+        {
+            if (!is_pressed)
+            {
+                buttons[i].button_state = BUTTON_STATE_IS_RELEASING_LONG;
+                buttons[i].last_time_toggle = current_time;
+            }
+            break;
+        }
+        case BUTTON_STATE_IS_RELEASING_LONG:
+        {
+            if (!is_pressed && (current_time - buttons[i].last_time_toggle >= DEBOUNCE_US))
+            {
+                buttons[i].button_state = BUTTON_STATE_RELEASED;
+                buttons[i].last_time_toggle = current_time;
+            }
+            if (is_pressed)
+            {
+                buttons[i].button_state = BUTTON_STATE_PRESSED_LONG;
+                buttons[i].last_time_toggle = current_time;
+            }
             break;
         }
         case BUTTON_STATE_IS_PRESSING:
@@ -63,11 +96,6 @@ void button_task_handle(void)
             {
                 buttons[i].button_state = BUTTON_STATE_PRESSED;
                 buttons[i].press_count += 1;
-                if (buttons[i].button_callback != NULL)
-                {
-                    buttons[i].button_callback();
-                }
-                // last_time_toggle = current_time;
             }
             if (!is_pressed)
             {
@@ -82,6 +110,10 @@ void button_task_handle(void)
             {
                 buttons[i].button_state = BUTTON_STATE_RELEASED;
                 buttons[i].last_time_toggle = current_time;
+                if (buttons[i].button_callback_short != NULL)
+                {
+                    buttons[i].button_callback_short();
+                }
             }
             if (is_pressed)
             {
@@ -106,7 +138,9 @@ void button_task_handle(void)
 bool button_task_is_pressed(int id)
 {
     return buttons[id].button_state == BUTTON_STATE_PRESSED ||
-           buttons[id].button_state == BUTTON_STATE_IS_RELEASING;
+           buttons[id].button_state == BUTTON_STATE_IS_RELEASING ||
+           buttons[id].button_state == BUTTON_STATE_PRESSED_LONG ||
+           buttons[id].button_state == BUTTON_STATE_IS_RELEASING_LONG;
 }
 
 uint32_t button_task_get_press_count(int id)
