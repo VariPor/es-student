@@ -103,15 +103,15 @@ void led_task_next_state(void)
 
 void led_task_next_period(void)
 {
-    switch (half_period_us)
+    switch (half_period_us * 2 / 1000)
     {
-    case 125000:
+    case LED_PERIOD_250:
         half_period_us = 250000;
         break;
-    case 250000:
+    case LED_PERIOD_500:
         half_period_us = 500000;
         break;
-    case 500000:
+    case LED_PERIOD_1000:
         half_period_us = 125000;
         break;
     default:

@@ -11,6 +11,13 @@ typedef enum
     LED_STATE_BLINK
 } led_state_t;
 
+typedef enum
+{
+    LED_PERIOD_250 = 250,
+    LED_PERIOD_500 = 500,
+    LED_PERIOD_1000 = 1000
+} led_period_t;
+
 void led_task_init(void);
 void led_task_handle(void);
 
