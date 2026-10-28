@@ -13,6 +13,9 @@ static const uint BUTTON_PIN = 15;
 #define ADC_VREF_V 3.3f
 #define ADC_LEVELS 4096
 
+// встроенный датчик температуры - канал 4
+#define ADC_TEMP_CHANNEL 4
+
 // запускает стандартный ввод-вывод и настраивает выводы
 void platform_init(void)
 {
@@ -28,6 +31,9 @@ void platform_init(void)
     // запуск АЦП
     adc_init();
     adc_gpio_init(ADC_PIN);
+
+    // включение питания датчика
+    adc_set_temp_sensor_enabled(true);
 }
 
 void platform_led_set(bool on)
@@ -51,4 +57,13 @@ float platform_voltage_read(void)
 {
     adc_select_input(ADC_CHANNEL);
     return adc_read() * ADC_VREF_V / ADC_LEVELS;
+}
+
+float platform_temp_read(void)
+{
+    adc_select_input(ADC_TEMP_CHANNEL);
+    float voltage = adc_read() * ADC_VREF_V / ADC_LEVELS;
+    // перевод вольт в градусы
+    float T = 27 - (voltage - 0.706) / 0.001721;
+    return T;
 }

@@ -1,0 +1,30 @@
+задание: 3.1.2
+проект: 311-adc
+устройство: 2e8a:000a
+серийный номер: 5303284748B5861C
+порт: /dev/ttyACM0
+начало: 2026-10-28T19:29:39
+   0.000 --> 
+   0.503 --> info
+   0.553 <-- info
+   0.553 <-- name: es-adc
+   0.553 <-- version: 1.3.0
+   0.553 <-- project: 311-adc
+   0.553 <-- repo: https://github.com/VariPor/es-student
+   0.553 <-- board: pico
+   0.553 <-- serial: 5303284748B5861C
+   0.553 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   0.553 <-- pico-sdk: 2.3.0
+   1.511 --> get_temp
+   1.561 <-- get_temp
+   1.561 <-- temp: 30.9 C
+   2.519 --> get_temp
+   2.569 <-- get_temp
+   2.569 <-- temp: 30.9 C
+   3.525 --> get_temp
+   3.575 <-- get_temp
+   3.575 <-- temp: 30.9 C
+   4.534 --> get_voltage
+   4.584 <-- get_voltage
+   4.585 <-- voltage: 0.500 V
+итог: отправлено кадров 6, принято строк 17
