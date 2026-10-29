@@ -22,6 +22,7 @@ add_library(logic STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/button-task/button-task.c
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/led-task/led-task.c
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/pi-task/pi-task.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/logic/telemetry-task/telemetry-task.c
 )
 
 target_include_directories(logic PUBLIC

@@ -10,7 +10,7 @@
 
 enum
 {
-    STOPWATCHES_COUNT = 5
+    STOPWATCHES_COUNT = 6
 };
 
 struct profiling_result_t

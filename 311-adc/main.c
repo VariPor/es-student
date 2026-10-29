@@ -10,6 +10,7 @@
 #include "pi-task/pi-task.h"
 #include "firmware.h"
 #include "platform/platform.h"
+#include "telemetry-task/telemetry-task.h"
 
 enum stopwatch_numbers
 {
@@ -17,7 +18,8 @@ enum stopwatch_numbers
     STOPWATCH_COMMAND,
     STOPWATCH_LED,
     STOPWATCH_BUTTON,
-    STOPWATCH_PI
+    STOPWATCH_PI,
+    STOPWATCH_TELEMETRY
 };
 
 int main()
@@ -29,6 +31,7 @@ int main()
     led_task_init();
     button_task_init(led_task_next_state);
     platform_init();
+    telemetry_task_init(api_print_telemetry);
 
     // инициализация секундомеров
     profiling_stopwatch_init(STOPWATCH_LOOP, "loop");
@@ -36,6 +39,7 @@ int main()
     profiling_stopwatch_init(STOPWATCH_LED, "led");
     profiling_stopwatch_init(STOPWATCH_BUTTON, "button");
     profiling_stopwatch_init(STOPWATCH_PI, "pi");
+    profiling_stopwatch_init(STOPWATCH_TELEMETRY, "telemetry");
     while (1)
     {
         profiling_start(STOPWATCH_LOOP);
@@ -51,6 +55,10 @@ int main()
         profiling_start(STOPWATCH_PI);
         pi_task_handle();
         profiling_stop(STOPWATCH_PI);
+
+        profiling_start(STOPWATCH_TELEMETRY);
+        telemetry_task_handle();
+        profiling_stop(STOPWATCH_TELEMETRY);
 
         profiling_start(STOPWATCH_COMMAND);
         // принятая строка становится командой, команда - действием прибора
