@@ -16,6 +16,9 @@ static const uint BUTTON_PIN = 15;
 // встроенный датчик температуры - канал 4
 #define ADC_TEMP_CHANNEL 4
 
+// вывод, через резистор заряжающий конденсатор RC-цепи
+#define CHARGE_PIN 22
+
 // запускает стандартный ввод-вывод и настраивает выводы
 void platform_init(void)
 {
@@ -34,6 +37,11 @@ void platform_init(void)
 
     // включение питания датчика
     adc_set_temp_sensor_enabled(true);
+
+    // GP22 на выход, на выводе ноль
+    gpio_init(CHARGE_PIN);
+    gpio_set_dir(CHARGE_PIN, GPIO_OUT);
+    gpio_put(CHARGE_PIN, 0);
 }
 
 void platform_led_set(bool on)
@@ -66,4 +74,9 @@ float platform_temp_read(void)
     // перевод вольт в градусы
     float T = 27 - (voltage - 0.706) / 0.001721;
     return T;
+}
+
+void platform_charge_set(bool on)
+{
+    gpio_put(CHARGE_PIN, on);
 }

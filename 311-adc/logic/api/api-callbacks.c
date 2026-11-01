@@ -217,6 +217,18 @@ static void cmd_tm_start(const command_t *command)
     printf("telemetry: started, period %lu ms\n", period_ms);
 }
 
+static void cmd_charge_on(const command_t *command)
+{
+    platform_charge_set(true);
+    printf("charge: on\n");
+}
+
+static void cmd_charge_off(const command_t *command)
+{
+    platform_charge_set(false);
+    printf("charge: off\n");
+}
+
 static void cmd_tm_stop(const command_t *command)
 {
     telemetry_task_stop();
@@ -238,6 +250,8 @@ const api_command_t api_commands[] = {
     {"get_voltage", "voltage on GP26, ADC input 0", cmd_get_voltage},
     {"get_temp", "chip temperature, degrees Celsius", cmd_get_temp},
     {"tm_start", "start telemetry", cmd_tm_start},
-    {"tm_stop", "stop telemetry", cmd_tm_stop}};
+    {"tm_stop", "stop telemetry", cmd_tm_stop},
+    {"charge_on", "enable capacitor charging", cmd_charge_on},
+    {"charge_off", "disable capacitor charging", cmd_charge_off}};
 
 const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
