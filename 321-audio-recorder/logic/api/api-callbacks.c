@@ -246,7 +246,7 @@ static void cmd_timer_blink_start(const command_t *command)
 
     if (!platform_blink_start(period_ms))
     {
-        printf("error: period_ms must be 10...60000\n");
+        printf("error: period_ms must be 10..60000\n");
         return;
     }
 
