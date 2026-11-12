@@ -23,6 +23,7 @@ add_library(logic STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/led-task/led-task.c
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/pi-task/pi-task.c
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/telemetry-task/telemetry-task.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/logic/block-task/block-task.c
 )
 
 target_include_directories(logic PUBLIC
@@ -51,6 +52,7 @@ target_include_directories(platform PUBLIC
 target_link_libraries(platform PRIVATE
     pico_stdlib
     hardware_adc
+    hardware_dma
 )
 
 

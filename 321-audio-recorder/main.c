@@ -11,6 +11,7 @@
 #include "firmware.h"
 #include "platform/platform.h"
 #include "telemetry-task/telemetry-task.h"
+#include "block-task/block-task.h"
 
 enum stopwatch_numbers
 {
@@ -19,7 +20,8 @@ enum stopwatch_numbers
     STOPWATCH_LED,
     STOPWATCH_BUTTON,
     STOPWATCH_PI,
-    STOPWATCH_TELEMETRY
+    STOPWATCH_TELEMETRY,
+    STOPWATCH_DMA
 };
 
 int main()
@@ -40,6 +42,7 @@ int main()
     profiling_stopwatch_init(STOPWATCH_BUTTON, "button");
     profiling_stopwatch_init(STOPWATCH_PI, "pi");
     profiling_stopwatch_init(STOPWATCH_TELEMETRY, "telemetry");
+    profiling_stopwatch_init(STOPWATCH_DMA, "dma");
     while (1)
     {
         profiling_start(STOPWATCH_LOOP);
@@ -59,6 +62,10 @@ int main()
         profiling_start(STOPWATCH_TELEMETRY);
         telemetry_task_handle();
         profiling_stop(STOPWATCH_TELEMETRY);
+
+        profiling_start(STOPWATCH_DMA);
+        block_task_handle();
+        profiling_stop(STOPWATCH_DMA);
 
         profiling_start(STOPWATCH_COMMAND);
         // принятая строка становится командой, команда - действием прибора

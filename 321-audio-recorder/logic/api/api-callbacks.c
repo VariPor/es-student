@@ -14,6 +14,7 @@
 #include "firmware.h"
 #include "systime/systime.h"
 #include "platform/platform.h"
+#include "block-task/block-task.h"
 
 // период телеметрии по умолчанию
 #define TELEMETRY_DEFAULT_PERIOD_MS 100
@@ -328,6 +329,56 @@ static void cmd_cap_dump(const command_t *command)
     printf("\n");
 }
 
+// print_dma_cap(): наименьший, наибольший и средний код блока;
+// расчёт времени — count * 1000000 / PLATFORM_SAMPLE_RATE_HZ, в uint64_t;
+// строка dma_cap: <N> samples in <мкс> us, expected <мкс> us, min <код> max <код> mean <код, 1 знак>
+static void print_dma_cap(const uint16_t *samples, uint32_t count, uint32_t time)
+{
+    uint16_t min = -1;
+    uint16_t max = 0;
+    float mean = 0;
+    for (uint32_t i = 0; i < count; ++i)
+    {
+        if (min > samples[i])
+        {
+            min = samples[i];
+        }
+        if (max < samples[i])
+        {
+            max = samples[i];
+        }
+        mean += samples[i];
+    }
+    mean /= count;
+    uint64_t expected_time = ((uint64_t)count) * 1000000 / PLATFORM_SAMPLE_RATE_HZ;
+    printf("dma_cap: %lu samples in %lu us, expected %llu us, min %u max %u mean %.1f\n",
+           count, time, expected_time, min, max, mean);
+}
+
+// cmd_dma_cap(): аргумент не один или не число — error: usage dma_cap <N>
+// N = 0 или больше PLATFORM_BLOCK_MAX — error: N must be 1..8192
+// идёт телеметрия или задача не приняла захват — error: adc busy
+// иначе захват с функцией print_dma_cap, ответ придёт, когда блок будет готов
+static void cmd_dma_cap(const command_t *command)
+{
+    uint32_t N;
+    if (command->argc != 1 || !parse_u32(command->argv[0], &N))
+    {
+        printf("error: usage dma_cap <N>\n");
+        return;
+    }
+    if (N == 0 || N > PLATFORM_BLOCK_MAX)
+    {
+        printf("error: N must be 1..8192\n");
+        return;
+    }
+    if (!block_task_start(N, print_dma_cap))
+    {
+        printf("error: adc busy\n");
+        return;
+    }
+}
+
 const api_command_t api_commands[] = {
     {"info", "device passport", cmd_info},
     {"uptime", "time since reset", cmd_uptime},
@@ -349,6 +400,7 @@ const api_command_t api_commands[] = {
     {"timer_blink_start", "blink led by timer: timer_blink_start <period_ms>", cmd_timer_blink_start},
     {"timer_blink_stop", "stop timer blink, number of toggles", cmd_timer_blink_stop},
     {"cap_start", "start capturing", cmd_cap_start},
-    {"cap_dump", "capturing result", cmd_cap_dump}};
+    {"cap_dump", "capturing result", cmd_cap_dump},
+    {"dma_cap", "block result", cmd_dma_cap}};
 
 const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
