@@ -26,3 +26,26 @@ bool platform_blink_start(uint32_t period_ms);
 
 // гасит светодиод и возвращает число переключений с запуска
 uint32_t platform_blink_stop(void);
+
+// занят ли АЦП захватом
+bool platform_adc_busy(void);
+
+// захват count отсчётов по будильнику с периодом period_us;
+// false - АЦП занят или count больше PLATFORM_CAPTURE_NAX
+#define PLATFORM_CAPTURE_MAX 2000
+bool platform_capture_start(uint32_t count, uint32_t period_us);
+bool platform_capture_done(void);
+
+// итог захвата по будильнику: отсчёты, разброс интервалов
+// и доля времени ядра внутри обработчика в процентах
+typedef struct
+{
+    const uint16_t *samples;
+    uint32_t count;
+    uint32_t period_us;
+    uint32_t min_interval_us;
+    uint32_t max_interval_us;
+    float handler_percent;
+} platform_capture_t;
+
+void pltaform_capture_get(platform_capture_t *capture);
