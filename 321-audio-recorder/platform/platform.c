@@ -208,7 +208,7 @@ void pltaform_capture_get(platform_capture_t *capture)
         capture->handler_percent = 0;
         return;
     }
-    capture->min_interval_us = capture_samples[1] - capture_samples[0];
+    capture->min_interval_us = -1;
     capture->max_interval_us = 0;
     capture->handler_percent = capture_handler_us * 100 /
                                (capture_times[capture_index - 1] - capture_times[0]);
