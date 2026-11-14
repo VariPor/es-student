@@ -379,6 +379,49 @@ static void cmd_dma_cap(const command_t *command)
     }
 }
 
+// период индикатора записи во время потока
+#define STREAM_BLINK_PERIOD_MS 250
+
+// cmd_stream_start(): больше одного аргумента, не число или не 8 и не 16 —
+//     error: usage stream_start [8|16]
+// идёт телеметрия или задача не начала поток — error: adc busy
+// ответ stream: started, 44100 Hz, <разрядность> bit
+// индикатор записи: мигание с периодом STREAM_BLINK_PERIOD_MS,
+//     задачу светодиода — в состояние «выключен»
+static void cmd_stream_start(const command_t *command)
+{
+    uint32_t bits = 16;
+    if (command->argc > 1 || (command->argc == 1 && !parse_u32(command->argv[0], &bits)))
+    {
+        printf("error: usage stream_start [8|16]\n");
+        return;
+    }
+
+    if (!stream_task_start(bits))
+    {
+        printf("error: adc busy\n");
+        return;
+    }
+    printf("stream: started, %i, %lu bit\n", PLATFORM_SAMPLE_RATE_HZ, bits);
+    cmd_led_disable(NULL);
+    led_task_set_period_ms(STREAM_BLINK_PERIOD_MS);
+    led_task_set_state(LED_STATE_BLINK);
+}
+
+// cmd_stream_stop(): если поток идёт — остановить задачу и мигание;
+// ответ stream: stopped, <кадров> frames, <отсчётов> samples, <переполнений> overruns
+static void cmd_stream_stop(const command_t *command)
+{
+    if (stream_task_get_state() == STREAM_STATE_RUN)
+    {
+        stream_task_stop();
+        led_task_set_state(LED_STATE_OFF);
+    }
+    printf("stream: stopped, %lu frames, %lu samples, %lu overruns\n",
+           stream_task_get_frames(), stream_task_get_samples(), stream_task_get_overruns());
+}
+
+
 const api_command_t api_commands[] = {
     {"info", "device passport", cmd_info},
     {"uptime", "time since reset", cmd_uptime},
@@ -401,6 +444,8 @@ const api_command_t api_commands[] = {
     {"timer_blink_stop", "stop timer blink, number of toggles", cmd_timer_blink_stop},
     {"cap_start", "start capturing", cmd_cap_start},
     {"cap_dump", "capturing result", cmd_cap_dump},
-    {"dma_cap", "block result", cmd_dma_cap}};
+    {"dma_cap", "block result", cmd_dma_cap},
+    {"stream_start", "start adc stream", cmd_stream_start},
+    {"stream_stop", "stop adc stream", cmd_stream_stop}};
 
 const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);

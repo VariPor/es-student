@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "platform/platform.h"
+
 void api_handle(const command_t *command)
 {
     if (command->truncated)
@@ -30,4 +32,11 @@ void api_handle(const command_t *command)
         }
     }
     printf("error: unknown command '%s', try help\n", command->name);
+}
+
+void api_send_frame(const stream_header_t *header, const uint8_t *data, uint32_t bytes)
+{
+    // байты заголовка и отсчётов как они лежат в памяти
+    platform_write(header, sizeof(*header));
+    platform_write(data, bytes);
 }

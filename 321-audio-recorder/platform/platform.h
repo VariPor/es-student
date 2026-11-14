@@ -62,3 +62,22 @@ typedef struct
 } platform_capture_t;
 
 void pltaform_capture_get(platform_capture_t *capture);
+
+// поток: два буфера по PLATFORM_STREAM_BYTES байт по очереди; false - АЦП занят
+#define PLATFORM_STREAM_BYTES 1024
+bool platform_stream_start(uint8_t bits);
+void platform_stream_stop(void);
+
+// следующий заполненный буфер по порядку или NULL, если он ещё не готов
+// samples - отсчёты
+const uint8_t *platform_stream_next(uint32_t *samples);
+
+// буфер отправлен, его можно заполнять снова
+void platform_stream_release(void);
+
+// сколько раз DMA застал буфер неотправленным
+uint32_t platform_stream_overruns(void);
+
+// отправляет байты в порт как есть, без замены \n на \r\n
+void platform_write(const void *data, uint32_t bytes);
+
