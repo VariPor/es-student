@@ -402,7 +402,7 @@ static void cmd_stream_start(const command_t *command)
         printf("error: adc busy\n");
         return;
     }
-    printf("stream: started, %i, %lu bit\n", PLATFORM_SAMPLE_RATE_HZ, bits);
+    printf("stream: started, %i Hz, %lu bit\n", PLATFORM_SAMPLE_RATE_HZ, bits);
     cmd_led_disable(NULL);
     led_task_set_period_ms(STREAM_BLINK_PERIOD_MS);
     led_task_set_state(LED_STATE_BLINK);
