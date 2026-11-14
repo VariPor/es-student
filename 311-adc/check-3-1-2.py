@@ -16,7 +16,7 @@ LOG_NAME = "device-3-1-2.log"
 BACKSPACE = "\x7f"
 # Кадр команды и сколько секунд слушать ответ.
 STEPS = [
-    ("\r", 0.5),
+    ("help\r", 0.5),
     ("info\r", 1),
     ("get_temp\r", 1),
     ("get_temp\r", 1),
