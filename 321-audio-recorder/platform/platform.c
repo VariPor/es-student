@@ -3,6 +3,8 @@
 #include "hardware/adc.h"
 #include "hardware/dma.h"
 #include "hardware/irq.h"
+#include "hardware/pwm.h"
+#include "hardware/clocks.h"
 
 static const uint LED_PIN = 25;
 static const uint BUTTON_PIN = 15;
@@ -53,6 +55,14 @@ static volatile bool stream_ready[2];
 static volatile uint32_t stream_overruns;
 static uint32_t stream_samples;
 static uint32_t stream_next;
+
+// вывод тона, его меандр делает модуль ШИМ
+#define TONE_PIN 20
+
+// счёт ШИМ тона: делитель приводит clk_sys к 1 МГц, счётчик считает микросекунды
+#define TONE_COUNT_HZ 1000000
+
+static uint tone_slice;
 
 // обработчик прерывания DMA_IRQ_0: канал заполнил свой буфер
 static void on_stream_buffer(void)
@@ -253,6 +263,38 @@ void platform_init(void)
     irq_set_enabled(DMA_IRQ_0, true);
 
     adc_user = ADC_FREE;
+
+    // GP20 отдан блоку ШИМ
+    gpio_set_function(TONE_PIN, GPIO_FUNC_PWM);
+    tone_slice = pwm_gpio_to_slice_num(TONE_PIN);
+
+    // один отсчёт в микросекунду: 125 МГц / 125
+    pwm_set_clkdiv(tone_slice, 125.0f);
+
+    // период 1000 мкс, порог 0
+    pwm_set_wrap(tone_slice, 999);
+    pwm_set_gpio_level(TONE_PIN, 0);
+    pwm_set_enabled(tone_slice, true);
+}
+
+// platform_tone_set(): 0 — порог 0, на выводе ноль
+//     вне 20..20000 Гц — false
+//     период в микросекундах 1 000 000 / freq_hz, wrap — период минус 1,
+//     порог — половина периода
+bool platform_tone_set(uint32_t freq_hz)
+{
+    if (freq_hz == 0)
+    {
+        pwm_set_gpio_level(20, 0);
+        return true;
+    }
+    if (20 > freq_hz || freq_hz > 20000)
+    {
+        return false;
+    }
+    pwm_set_wrap(tone_slice, TONE_COUNT_HZ / freq_hz - 1);
+    pwm_set_gpio_level(TONE_PIN, TONE_COUNT_HZ / freq_hz / 2);
+    return true;
 }
 
 // platform_stream_next(): буфер stream_next не готов — NULL;

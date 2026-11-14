@@ -421,6 +421,29 @@ static void cmd_stream_stop(const command_t *command)
            stream_task_get_frames(), stream_task_get_samples(), stream_task_get_overruns());
 }
 
+// cmd_generate_tone(): не один аргумент или не число — error: usage generate_tone <Hz>
+//     platform_tone_set() вернула false — error: Hz must be 0 or 20..20000
+//     0 — tone: off, иначе tone: <Hz> Hz
+static void cmd_generate_tone(const command_t *command)
+{
+    uint32_t freq_hz;
+    if (command->argc != 1 || !parse_u32(command->argv[0], &freq_hz))
+    {
+        printf("error: usage generate_tone <Hz>\n");
+        return;
+    }
+    if (!platform_tone_set(freq_hz))
+    {
+        printf("error: Hz must be 0 or 20..20000\n");
+        return;
+    }
+    if (freq_hz == 0)
+    {
+        printf("tone: off\n");
+        return;
+    }
+    printf("tone: %lu Hz\n", freq_hz);
+}
 
 const api_command_t api_commands[] = {
     {"info", "device passport", cmd_info},
@@ -446,6 +469,7 @@ const api_command_t api_commands[] = {
     {"cap_dump", "capturing result", cmd_cap_dump},
     {"dma_cap", "block result", cmd_dma_cap},
     {"stream_start", "start adc stream", cmd_stream_start},
-    {"stream_stop", "stop adc stream", cmd_stream_stop}};
+    {"stream_stop", "stop adc stream", cmd_stream_stop},
+    {"generate_tone", "start or stop generate tone", cmd_generate_tone}};
 
 const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
