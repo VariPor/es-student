@@ -447,7 +447,7 @@ static void cmd_generate_tone(const command_t *command)
 
 static void cmd_hang(const command_t *command)
 {
-    printf("hang: superloop stoped\n");
+    printf("hang: superloop stopped\n");
 
     // суперцикл больше не идёт, прерывания приходят как прежде
     while (1)
