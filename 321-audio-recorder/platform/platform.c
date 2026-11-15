@@ -5,6 +5,7 @@
 #include "hardware/irq.h"
 #include "hardware/pwm.h"
 #include "hardware/clocks.h"
+#include "hardware/watchdog.h"
 
 static const uint LED_PIN = 25;
 static const uint BUTTON_PIN = 15;
@@ -63,6 +64,12 @@ static uint32_t stream_next;
 #define TONE_COUNT_HZ 1000000
 
 static uint tone_slice;
+
+// наибольший таймаут сторожевого таймера RP2040 (RP204-E1)
+#define WATCHDOG_MAX_MS 8388
+
+static bool watchdog_reset;
+static uint32_t watchdog_restarts;
 
 // обработчик прерывания DMA_IRQ_0: канал заполнил свой буфер
 static void on_stream_buffer(void)
@@ -229,6 +236,19 @@ int32_t platform_block_time_us(void)
 // запускает стандартный ввод-вывод и настраивает выводы
 void platform_init(void)
 {
+    // причина прошлого сброса; счётчик сбросов подряд хранит scratch-регистр 0,
+    // его не стирает сброс по сторожевому таймеру
+    watchdog_reset = watchdog_enable_caused_reboot();
+    if (watchdog_reset)
+    {
+        watchdog_hw->scratch[0]++;
+    }
+    else
+    {
+        watchdog_hw->scratch[0] = 0;
+    }
+    watchdog_restarts = watchdog_hw->scratch[0];
+
     stdio_init_all();
 
     gpio_init(LED_PIN);
@@ -275,6 +295,29 @@ void platform_init(void)
     pwm_set_wrap(tone_slice, 999);
     pwm_set_gpio_level(TONE_PIN, 0);
     pwm_set_enabled(tone_slice, true);
+}
+
+bool platform_watchdog_enabled(uint32_t timeout_ms)
+{
+    if (timeout_ms == 0 || timeout_ms > WATCHDOG_MAX_MS)
+    {
+        return false;
+    }
+
+    // true - не считать, пока ядро остановлено отладчиком
+    watchdog_enable(timeout_ms, true);
+    return true;
+}
+
+void platform_watchdog_feed(void)
+{
+    watchdog_update();
+}
+
+bool platform_watchdog_caused_reset(uint32_t *restarts)
+{
+    *restarts = watchdog_restarts;
+    return watchdog_reset;
 }
 
 // platform_tone_set(): 0 — порог 0, на выводе ноль

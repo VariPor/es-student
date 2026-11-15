@@ -1,4 +1,6 @@
-# es-student
+# es-student  
+
+Таймаут сторожевого таймера - 5 мс. Это в 4 раза больше самой долгой итерации суперцикла и более чем в 2 раза меньше времени заполнения буфера.  
 
 ![](https://github.com/VariPor/es-student/actions/workflows/check-1-1-1.yml/badge.svg)  
 ![](https://github.com/VariPor/es-student/actions/workflows/check-1-1-2.yml/badge.svg)  

@@ -1,0 +1,86 @@
+задание: 3.2.6
+проект: 321-audio-recorder
+устройство: 2e8a:000a
+серийный номер: 5303284748B5861C
+порт: /dev/ttyACM0
+начало: 2026-11-15T20:27:47
+   0.000 --> 
+   0.503 --> help
+   0.505 <-- help
+   0.505 <-- help                 list of commands
+   0.505 <-- info                 device passport
+   0.505 <-- uptime               time since reset
+   0.505 <-- led_enable           enable led
+   0.505 <-- led_disable          disable led
+   0.505 <-- led_blink            set led blink
+   0.505 <-- led_period           set led period: led_period [period_ms]
+   0.505 <-- button               button info
+   0.505 <-- pi_start             start calculating pi
+   0.505 <-- pi                   result calculating pi
+   0.505 <-- profiling            print results of profiling
+   0.505 <-- profiling_reset      reset profiling
+   0.506 <-- get_voltage          voltage on GP26, ADC input 0
+   0.506 <-- get_temp             chip temperature, degrees Celsius
+   0.506 <-- tm_start             start telemetry
+   0.506 <-- tm_stop              stop telemetry
+   0.506 <-- charge_on            enable capacitor charging
+   0.507 <-- charge_off           disable capacitor charging
+   0.507 <-- timer_blink_start    blink led by timer: timer_blink_start <period_ms>
+   0.507 <-- timer_blink_stop     stop timer blink, number of toggles
+   0.507 <-- cap_start            start capturing
+   0.507 <-- cap_dump             capturing result
+   0.507 <-- dma_cap              block result
+   0.557 <-- stream_start         start adc stream
+   0.557 <-- stream_stop          stop adc stream
+   0.557 <-- generate_tone        start or stop generate tone
+   0.557 <-- hang                 stop superloop
+   0.557 <-- wdt_enable           enable watchdog
+   0.557 <-- reset_reason         print reset reason and restart's count
+   1.510 --> info
+   1.560 <-- info
+   1.560 <-- name: es-recorder
+   1.560 <-- version: 1.3.2
+   1.560 <-- project: 321-audio-recorder
+   1.560 <-- repo: https://github.com/VariPor/es-student
+   1.560 <-- board: pico
+   1.560 <-- serial: 5303284748B5861C
+   1.560 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   1.560 <-- pico-sdk: 2.3.0
+   2.513 --> reset_reason
+   2.563 <-- reset_reason
+   2.563 <-- reset: other, restarts 0
+   3.017 --> wdt_enable 9000
+   3.067 <-- wdt_enable 9000
+   3.067 <-- error: timeout_ms must be 1..8388
+   3.067 <-- wdt: enabled, timeout 9000 ms
+   3.521 --> wdt_enable 2000
+   3.571 <-- wdt_enable 2000
+   3.571 <-- wdt: enabled, timeout 2000 ms
+   4.023 --> uptime
+   4.073 <-- uptime
+   4.073 <-- uptime: 18558 ms
+   7.042 --> uptime
+   7.093 <-- uptime
+   7.093 <-- uptime: 21576 ms
+   7.546 --> hang
+   7.596 <-- hang
+   7.596 <-- hang: superloop stoped
+   8.556 --- ждём перезапуска платы
+  10.590 --- плата снова на связи
+  10.590 --> reset_reason
+  10.640 <-- reset_reason
+  10.640 <-- reset: watchdog, restarts 1
+  11.094 --> uptime
+  11.144 <-- uptime
+  11.144 <-- uptime: 1518 ms
+  11.598 --> info
+  11.648 <-- info
+  11.648 <-- name: es-recorder
+  11.648 <-- version: 1.3.2
+  11.648 <-- project: 321-audio-recorder
+  11.648 <-- repo: https://github.com/VariPor/es-student
+  11.648 <-- board: pico
+  11.648 <-- serial: 5303284748B5861C
+  11.648 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+  11.648 <-- pico-sdk: 2.3.0
+итог: отправлено кадров 12, принято строк 65

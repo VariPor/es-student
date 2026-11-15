@@ -445,6 +445,49 @@ static void cmd_generate_tone(const command_t *command)
     printf("tone: %lu Hz\n", freq_hz);
 }
 
+static void cmd_hang(const command_t *command)
+{
+    printf("hang: superloop stoped\n");
+
+    // суперцикл больше не идёт, прерывания приходят как прежде
+    while (1)
+    {
+    }
+}
+
+// cmd_wdt_enable(): аргумент не один или не число — error: usage wdt_enable <timeout_ms>
+// platform не принял таймаут — error: timeout_ms must be 1..8388
+// ответ wdt: enabled, timeout <таймаут> ms
+static void cmd_wdt_enable(const command_t *command)
+{
+    uint32_t timeout_ms = 0;
+    if (command->argc != 1 || !parse_u32(command->argv[0], &timeout_ms))
+    {
+        printf("error: usage wdt_enable <timeout_ms>\n");
+    }
+    if (!platform_watchdog_enabled(timeout_ms))
+    {
+        printf("error: timeout_ms must be 1..8388\n");
+    }
+    printf("wdt: enabled, timeout %lu ms\n", timeout_ms);
+}
+
+// cmd_reset_reason(): ответ reset: watchdog, restarts <число>
+// или reset: other, restarts <число>
+static void cmd_reset_reason(const command_t *command)
+{
+    uint32_t restarts;
+    if (platform_watchdog_caused_reset(&restarts))
+    {
+        printf("reset: watchdog");
+    }
+    else
+    {
+        printf("reset: other");
+    }
+    printf(", restarts %lu\n", restarts);
+}
+
 const api_command_t api_commands[] = {
     {"info", "device passport", cmd_info},
     {"uptime", "time since reset", cmd_uptime},
@@ -470,6 +513,9 @@ const api_command_t api_commands[] = {
     {"dma_cap", "block result", cmd_dma_cap},
     {"stream_start", "start adc stream", cmd_stream_start},
     {"stream_stop", "stop adc stream", cmd_stream_stop},
-    {"generate_tone", "start or stop generate tone", cmd_generate_tone}};
+    {"generate_tone", "start or stop generate tone", cmd_generate_tone},
+    {"hang", "stop superloop", cmd_hang},
+    {"wdt_enable", "enable watchdog", cmd_wdt_enable},
+    {"reset_reason", "print reset reason and restart's count", cmd_reset_reason}};
 
 const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
