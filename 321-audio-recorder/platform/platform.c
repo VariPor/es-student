@@ -533,3 +533,8 @@ void pltaform_capture_get(platform_capture_t *capture)
         }
     }
 }
+
+// platform_adc_volts(): код × опорное напряжение / число уровней
+float platform_adc_volts(float code) {
+    return code * ADC_VREF_V / ADC_LEVELS;
+}

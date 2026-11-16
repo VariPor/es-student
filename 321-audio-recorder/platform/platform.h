@@ -91,3 +91,6 @@ void platform_watchdog_feed(void);
 
 // был ли последний сброс по сторожевому таймеру и сколько было таких сбросов подряд
 bool platform_watchdog_caused_reset(uint32_t *restarts);
+
+// перевод код АЦП в вольты; код может быть дробным (например, среднее)
+float platform_adc_volts(float code);

@@ -1,0 +1,69 @@
+задание: 3.2.7
+проект: 321-audio-recorder
+устройство: 2e8a:000a
+серийный номер: 5303284748B5861C
+порт: /dev/ttyACM0
+начало: 2026-11-16T22:05:08
+   0.000 --> 
+   0.505 --> help
+   0.507 <-- help
+   0.507 <-- help                 list of commands
+   0.507 <-- info                 device passport
+   0.507 <-- uptime               time since reset
+   0.507 <-- led_enable           enable led
+   0.507 <-- led_disable          disable led
+   0.507 <-- led_blink            set led blink
+   0.508 <-- led_period           set led period: led_period [period_ms]
+   0.508 <-- button               button info
+   0.508 <-- pi_start             start calculating pi
+   0.508 <-- pi                   result calculating pi
+   0.508 <-- profiling            print results of profiling
+   0.508 <-- profiling_reset      reset profiling
+   0.508 <-- get_voltage          voltage on GP26, ADC input 0
+   0.508 <-- get_temp             chip temperature, degrees Celsius
+   0.508 <-- tm_start             start telemetry
+   0.508 <-- tm_stop              stop telemetry
+   0.508 <-- charge_on            enable capacitor charging
+   0.509 <-- charge_off           disable capacitor charging
+   0.509 <-- timer_blink_start    blink led by timer: timer_blink_start <period_ms>
+   0.509 <-- timer_blink_stop     stop timer blink, number of toggles
+   0.509 <-- cap_start            start capturing
+   0.509 <-- cap_dump             capturing result
+   0.509 <-- dma_cap              block result
+   0.510 <-- stream_start         start adc stream
+   0.510 <-- stream_stop          stop adc stream
+   0.510 <-- generate_tone        start or stop generate tone
+   0.510 <-- hang                 stop superloop
+   0.510 <-- wdt_enable           enable watchdog
+   0.510 <-- reset_reason         print reset reason and restart's count
+   0.560 <-- mic_bias             get samples and print mic bias
+   0.560 <-- mic_level            get samples and print level, peak, count
+   1.518 --> info
+   1.569 <-- info
+   1.569 <-- name: es-recorder
+   1.569 <-- version: 1.3.2
+   1.569 <-- project: 321-audio-recorder
+   1.569 <-- repo: https://github.com/VariPor/es-student
+   1.569 <-- board: pico
+   1.569 <-- serial: 5303284748B5861C
+   1.569 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   1.569 <-- pico-sdk: 2.3.0
+   2.527 --> mic_bias
+   2.578 <-- mic_bias
+   2.628 <-- mic: bias 0.760 V
+   3.030 --> mic_level
+   3.081 <-- mic_level
+   3.081 <-- mic: level 28.8 mV rms, peak 109.0 mV, 2 ms
+   3.533 --> mic_level 50
+   3.584 <-- mic_level 50
+   3.584 <-- mic: level 85.4 mV rms, peak 253.0 mV, 1 ms
+   4.036 --> mic_level 185
+   4.087 <-- mic_level 185
+   4.087 <-- mic: level 93.6 mV rms, peak 497.0 mV, 4 ms
+   4.540 --> mic_level 0
+   4.590 <-- mic_level 0
+   4.590 <-- error: ms must be 1..185
+   5.044 --> mic_level 200
+   5.095 <-- mic_level 200
+   5.095 <-- error: ms must be 1..185
+итог: отправлено кадров 9, принято строк 53
