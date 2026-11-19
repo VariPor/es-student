@@ -547,7 +547,7 @@ static void print_mic_level(const uint16_t *samples, uint32_t count, uint32_t ti
 // cmd_mic_bias(): захват 4410 отсчётов с функцией print_mic_bias
 static void cmd_mic_bias(const command_t *command)
 {
-    if (!block_task_start(4410, print_mic_bias))
+    if (!block_task_start(PLATFORM_SAMPLE_RATE_HZ * MIC_DEFAULT_WINDOW_MS / 1000, print_mic_bias))
     {
         printf("error: adc busy\n");
         return;
@@ -560,7 +560,7 @@ static void cmd_mic_bias(const command_t *command)
 //     захват с функцией print_mic_level
 static void cmd_mic_level(const command_t *command)
 {
-    uint32_t window = 100;
+    uint32_t window = MIC_DEFAULT_WINDOW_MS;
     if (command->argc > 1 || (command->argc == 1 && !parse_u32(command->argv[0], &window)))
     {
         printf("error: usage mic_level [<ms>]\n");
@@ -571,7 +571,7 @@ static void cmd_mic_level(const command_t *command)
         printf("error: ms must be 1..185\n");
         return;
     }
-    if (!block_task_start(window, print_mic_level))
+    if (!block_task_start((uint64_t)window * PLATFORM_SAMPLE_RATE_HZ / 1000, print_mic_level))
     {
         printf("error: adc busy\n");
         return;
