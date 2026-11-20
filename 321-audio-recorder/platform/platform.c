@@ -211,6 +211,7 @@ bool platform_block_start(uint32_t count)
     block_ready = false;
     adc_user = ADC_BLOCK;
 
+    dma_channel_acknowledge_irq1(block_channel);
     // куда, откуда, сколько; true - запустить сразу
     dma_channel_configure(block_channel, &cfg, block_samples, &adc_hw->fifo, count, true);
     block_start_us = time_us_32();
@@ -535,6 +536,7 @@ void pltaform_capture_get(platform_capture_t *capture)
 }
 
 // platform_adc_volts(): код × опорное напряжение / число уровней
-float platform_adc_volts(float code) {
+float platform_adc_volts(float code)
+{
     return code * ADC_VREF_V / ADC_LEVELS;
 }

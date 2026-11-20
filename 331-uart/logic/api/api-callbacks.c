@@ -15,6 +15,9 @@
 #include "systime/systime.h"
 #include "platform/platform.h"
 #include "edge-task/edge-task.h"
+#include "uart-task/uart-task.h"
+
+#define UART_CHARS_MAX 32
 
 static void cmd_info(const command_t *command)
 {
@@ -209,6 +212,74 @@ static void cmd_edge(const command_t *command)
     }
 }
 
+void print_bytes(const uint8_t *data, size_t size)
+{
+    for (size_t i = 0; i < size; ++i)
+    {
+        if (isprint(data[i]) == 0)
+        {
+            printf(".");
+        }
+        else
+        {
+            printf("%c", data[i]);
+        }
+    }
+}
+
+void print_errors(uint32_t errors)
+{
+    if (errors == 0)
+    {
+        printf(" err: none\n");
+        return;
+    }
+    printf(" err: %lu %lu %lu %lu\n", errors & PLATFORM_UART_FE,
+           errors & PLATFORM_UART_PE,
+           errors & PLATFORM_UART_BE,
+           errors & PLATFORM_UART_OE);
+}
+
+void cmd_loop(const command_t *command)
+{
+    const char *mode = command->argv[0];
+    if (command->argc != 1 || (strcmp(mode, "internal") != 0 && strcmp(mode, "pins") != 0))
+    {
+        printf("error: usage loop internal|pins\n");
+        return;
+    }
+    platform_uart_loop_set(strcmp(mode, "internal") == 0);
+    printf("loop: %s\n", mode);
+}
+
+void print_echo(const uint8_t *data, size_t size, uint32_t errors)
+{
+    printf("rx: ");
+    print_bytes(data, size);
+    print_errors(errors);
+}
+
+void cmd_echo(const command_t *command)
+{
+    if (command->argc != 1)
+    {
+        printf("error: usage echo <text>\n");
+        return;
+    }
+
+    if (strlen(command->argv[0]) > UART_CHARS_MAX)
+    {
+        printf("error: text longer than 32\n");
+        return;
+    }
+
+    if (!uart_task_start(PLATFORM_UART0, PLATFORM_UART0,
+                         (uint8_t *)command->argv[0], strlen(command->argv[0]), print_echo))
+    {
+        printf("error: uart is busy\n");
+    }
+}
+
 const api_command_t api_commands[] = {
     {"info", "device passport", cmd_info},
     {"uptime", "time since reset", cmd_uptime},
@@ -221,6 +292,8 @@ const api_command_t api_commands[] = {
     {"pi", "result calculating pi", cmd_pi},
     {"profiling", "print results of profiling", cmd_profiling},
     {"profiling_reset", "reset profiling", cmd_profiling_reset},
-    {"edge", "rise and fall of the RC line: edge pp|od", cmd_edge}};
+    {"edge", "rise and fall of the RC line: edge pp|od", cmd_edge},
+    {"loop", "UART0 loopback: loop internal|pins", cmd_loop},
+    {"echo", "text through UART0 and back: echo <text>", cmd_echo}};
 
 const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);

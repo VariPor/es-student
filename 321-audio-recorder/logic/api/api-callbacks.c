@@ -497,7 +497,7 @@ static void block_stats(const uint16_t *samples, uint32_t count,
                         float *mean, float *rms, float *peak)
 {
     uint32_t sum = 0;
-    for (uint32_t i = 0; i < count; i++)
+    for (uint32_t i = 0; i < count; ++i)
     {
         sum += samples[i];
     }
@@ -541,7 +541,9 @@ static void print_mic_level(const uint16_t *samples, uint32_t count, uint32_t ti
     float peak;
     block_stats(samples, count, &mean, &rms, &peak);
     printf("mic: level %.1f mV rms, peak %.1f mV, %lu ms\n",
-           rms, peak, count * 1000 / 44100);
+           platform_adc_volts(rms) * 1000,
+            platform_adc_volts(peak) * 1000, 
+            count * 1000 / PLATFORM_SAMPLE_RATE_HZ);
 }
 
 // cmd_mic_bias(): захват 4410 отсчётов с функцией print_mic_bias
