@@ -1,0 +1,139 @@
+задание: 3.3.3
+проект: 331-uart
+устройство: 2e8a:000a
+серийный номер: 5303284748B5861C
+порт: /dev/ttyACM0
+начало: 2026-11-21T16:10:24
+   0.000 --> 
+   0.505 --> help
+   0.506 <-- help
+   0.506 <-- help                 list of commands
+   0.506 <-- info                 device passport
+   0.506 <-- uptime               time since reset
+   0.506 <-- led_enable           enable led
+   0.506 <-- led_disable          disable led
+   0.506 <-- led_blink            set led blink
+   0.507 <-- led_period           set led period: led_period [period_ms]
+   0.507 <-- button               button info
+   0.507 <-- pi_start             start calculating pi
+   0.507 <-- pi                   result calculating pi
+   0.507 <-- profiling            print results of profiling
+   0.507 <-- profiling_reset      reset profiling
+   0.507 <-- edge                 rise and fall of the RC line: edge pp|od
+   0.507 <-- loop                 UART0 loopback: loop internal|pins
+   0.507 <-- echo                 text through UART0 and back: echo <text>
+   0.507 <-- link                 text from UART0 to UART1 and back: link <text>
+   0.557 <-- baud_shift           shift UART1 baud rate: baud_shift <percent>
+   0.557 <-- text                 32 characters from UART1 to UART0
+   0.557 <-- parity               parity of UART0 and UART1: parity <rx> <tx>
+   1.514 --> info
+   1.564 <-- info
+   1.564 <-- name: es-uart
+   1.565 <-- version: 1.4.0
+   1.565 <-- project: 331-uart
+   1.565 <-- repo: https://github.com/VariPor/es-student
+   1.565 <-- board: pico
+   1.565 <-- serial: 5303284748B5861C
+   1.565 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   1.565 <-- pico-sdk: 2.3.0
+   2.522 --> loop pins
+   2.572 <-- loop pins
+   2.573 <-- loop: pins
+   3.027 --> parity none none
+   3.077 <-- parity none none
+   3.077 <-- parity: uart0 none, uart1 none
+   3.531 --> baud_shift 0
+   3.581 <-- baud_shift 0
+   3.581 <-- baud_shift: uart1 115207 baud
+   4.034 --> link ping
+   4.084 <-- link ping
+   4.084 <-- 0->1 ping err: none
+   4.084 <-- 1->0 ping err: none
+   4.536 --> text
+   4.587 <-- text
+   4.587 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: none
+   5.040 --> baud_shift 2
+   5.090 <-- baud_shift 2
+   5.090 <-- baud_shift: uart1 117508 baud
+   5.543 --> text
+   5.593 <-- text
+   5.593 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: none
+   6.046 --> baud_shift -2
+   6.096 <-- baud_shift -2
+   6.096 <-- baud_shift: uart1 112892 baud
+   6.549 --> text
+   6.600 <-- text
+   6.600 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: none
+   7.052 --> baud_shift -3
+   7.102 <-- baud_shift -3
+   7.102 <-- baud_shift: uart1 111731 baud
+   7.556 --> text
+   7.606 <-- text
+   7.606 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: none
+   8.059 --> baud_shift -4
+   8.110 <-- baud_shift -4
+   8.110 <-- baud_shift: uart1 110595 baud
+   8.563 --> text
+   8.614 <-- text
+   8.614 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: none
+   9.068 --> baud_shift -5
+   9.118 <-- baud_shift -5
+   9.118 <-- baud_shift: uart1 109433 baud
+   9.572 --> text
+   9.623 <-- text
+   9.623 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: none
+  10.076 --> baud_shift -6
+  10.127 <-- baud_shift -6
+  10.127 <-- baud_shift: uart1 108295 baud
+  10.580 --> text
+  10.631 <-- text
+  11.084 --> baud_shift 3
+  11.135 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: FE baud_shift 3
+  11.135 <-- baud_shift: uart1 118652 baud
+  11.588 --> text
+  11.639 <-- text
+  11.639 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: none
+  12.093 --> baud_shift 4
+  12.143 <-- baud_shift 4
+  12.143 <-- baud_shift: uart1 119817 baud
+  12.597 --> text
+  12.648 <-- text
+  12.648 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: none
+  13.101 --> baud_shift 5
+  13.152 <-- baud_shift 5
+  13.152 <-- baud_shift: uart1 120948 baud
+  13.606 --> text
+  13.656 <-- text
+  13.656 <-- text: 29 chars .L.&....e..(..j.....S.....T.. err: none
+  14.110 --> baud_shift 6
+  14.160 <-- baud_shift 6
+  14.160 <-- baud_shift: uart1 122100 baud
+  14.614 --> text
+  14.664 <-- text
+  14.664 <-- text: 29 chars .......q.0....v.J............ err: none
+  15.119 --> baud_shift -10
+  15.169 <-- baud_shift -10
+  15.169 <-- baud_shift: uart1 103669 baud
+  15.623 --> text
+  15.673 <-- text
+  16.127 --> baud_shift 0
+  16.177 <-- text: 32 chars pqrstuvwxy...................... err: FE baud_shift 0
+  16.177 <-- baud_shift: uart1 115207 baud
+  16.630 --> parity even odd
+  16.681 <-- parity even odd
+  16.681 <-- parity: uart0 even, uart1 odd
+  17.134 --> text
+  17.185 <-- text
+  17.639 --> parity none none
+  17.689 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: PE parity none none
+  17.689 <-- parity: uart0 none, uart1 none
+  18.143 --> text
+  18.194 <-- text
+  18.194 <-- text: 32 chars 0123456789ABCDEFGHIJKLMNOPQRSTUV err: none
+  18.648 --> baud_shift 60
+  18.698 <-- baud_shift 60
+  18.698 <-- error: percent must be -50..50
+  19.152 --> parity even
+  19.202 <-- parity even
+  19.202 <-- error: usage parity none|even|addparity: uart0 even, uart1 0
+итог: отправлено кадров 37, принято строк 95
