@@ -3,9 +3,9 @@
 устройство: 2e8a:000a
 серийный номер: 5303284748B5861C
 порт: /dev/ttyACM0
-начало: 2026-11-22T00:32:05
+начало: 2026-11-22T00:36:00
    0.000 --> 
-   0.505 --> help
+   0.504 --> help
    0.506 <-- help
    0.506 <-- help                 list of commands
    0.506 <-- info                 device passport
@@ -19,46 +19,47 @@
    0.507 <-- pi                   result calculating pi
    0.507 <-- profiling            print results of profiling
    0.507 <-- profiling_reset      reset profiling
-   0.508 <-- edge                 rise and fall of the RC line: edge pp|od
-   0.508 <-- loop                 UART0 loopback: loop internal|pins
-   0.508 <-- echo                 text through UART0 and back: echo <text>
-   0.508 <-- link                 text from UART0 to UART1 and back: link <text>
-   0.558 <-- baud_shift           shift UART1 baud rate: baud_shift <percent>
-   0.558 <-- text                 32 characters from UART1 to UART0
-   0.558 <-- parity               parity of UART0 and UART1: parity <rx> <tx>
-   0.558 <-- block                64 bytes from UART1 to UART0: block irq|poll
-   1.516 --> info
-   1.567 <-- info
-   1.567 <-- name: es-uart
-   1.567 <-- version: 1.4.0
-   1.567 <-- project: 331-uart
-   1.567 <-- repo: https://github.com/VariPor/es-student
-   1.567 <-- board: pico
-   1.567 <-- serial: 5303284748B5861C
-   1.567 <-- chip: manufacturer 0x927, part 0x0002, revision 2
-   1.567 <-- pico-sdk: 2.3.0
-   2.526 --> loop pins
-   2.576 <-- loop pins
-   2.576 <-- loop: pins
-   3.030 --> parity none none
-   3.081 <-- parity none none
-   3.081 <-- parity: uart0 none, uart1 none
-   3.535 --> baud_shift 0
-   3.586 <-- baud_shift 0
-   3.586 <-- baud_shift: uart1 115207 baud
-   4.040 --> block irq
-   4.091 <-- block irq
-   4.091 <-- block irq: 64/64 match,  err: none
-   4.545 --> block poll
-   4.596 <-- block poll
-   4.596 <-- block poll: 32/64 match,  err: OE
-   5.049 --> block irq
-   5.100 <-- block irq
-   5.100 <-- block irq: 64/64 match,  err: none
-   5.553 --> block poll
-   5.604 <-- block poll
-   5.604 <-- block poll: 32/64 match,  err: OE
+   0.507 <-- edge                 rise and fall of the RC line: edge pp|od
+   0.507 <-- loop                 UART0 loopback: loop internal|pins
+   0.507 <-- echo                 text through UART0 and back: echo <text>
+   0.507 <-- link                 text from UART0 to UART1 and back: link <text>
+   0.557 <-- baud_shift           shift UART1 baud rate: baud_shift <percent>
+   0.557 <-- text                 32 characters from UART1 to UART0
+   0.557 <-- parity               parity of UART0 and UART1: parity <rx> <tx>
+   0.557 <-- block                64 bytes from UART1 to UART0: block irq|poll
+   1.515 --> info
+   1.566 <-- info
+   1.566 <-- name: es-uart
+   1.566 <-- version: 1.4.0
+   1.566 <-- project: 331-uart
+   1.566 <-- repo: https://github.com/VariPor/es-student
+   1.566 <-- board: pico
+   1.566 <-- serial: 5303284748B5861C
+   1.566 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   1.566 <-- pico-sdk: 2.3.0
+   2.523 --> loop pins
+   2.574 <-- loop pins
+   2.574 <-- loop: pins
+   3.028 --> parity none none
+   3.078 <-- parity none none
+   3.078 <-- parity: uart0 none, uart1 none
+   3.533 --> baud_shift 0
+   3.583 <-- baud_shift 0
+   3.583 <-- baud_shift: uart1 115207 baud
+   4.037 --> block irq
+   4.087 <-- block irq
+   4.087 <-- block irq: 64/64 match,  err: none
+   4.542 --> block poll
+   4.593 <-- block poll
+   4.593 <-- block poll: 32/64 match,  err: OE
+   5.047 --> block irq
+   5.098 <-- block irq
+   5.098 <-- block irq: 64/64 match,  err: none
+   5.552 --> block poll
+   5.603 <-- block poll
+   5.603 <-- block poll: 32/64 match,  err: OE
    6.057 --> block xx
    6.108 <-- block xx
-   6.108 <-- error: usage block irq|pollblock xx: 32/64 match,  err: OE
-итог: отправлено кадров 11, принято строк 46
+   6.108 <-- error: usage block irq|poll
+   6.108 <-- block xx: 32/64 match,  err: OE
+итог: отправлено кадров 11, принято строк 47

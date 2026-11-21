@@ -445,7 +445,7 @@ static void cmd_block(const command_t *command)
     if (command->argc != 1 || (strcmp(command->argv[0], "irq") != 0 &&
                                strcmp(command->argv[0], "poll") != 0))
     {
-        printf("error: usage block irq|poll");
+        printf("error: usage block irq|poll\n");
     }
     for (uint8_t i = 0; i < BLOCK_SIZE; ++i)
     {
