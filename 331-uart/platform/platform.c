@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 #include "hardware/uart.h"
+#include "hardware/irq.h"
 
 static const uint LED_PIN = 25;
 static const uint BUTTON_PIN = 15;
@@ -27,6 +28,25 @@ static const uint BUTTON_PIN = 15;
 
 #define UART_BAUD 115200
 
+// принятое обработчиком прерывания: блок длиннее очереди приёма
+#define RX_BUFFER_SIZE 128
+
+static volatile uint8_t rx_buffer[RX_BUFFER_SIZE];
+static volatile uint32_t rx_count;
+
+// обработчик UART0_IRQ: забирает из очереди всё, что там есть
+static void on_uart0_rx(void)
+{
+    while (uart_is_readable(uart0))
+    {
+        uint8_t byte = uart_get_hw(uart0)->dr & 0xff;
+        if (rx_count < RX_BUFFER_SIZE)
+        {
+            rx_buffer[rx_count++] = byte;
+        }
+    }
+}
+
 // запускает стандартный ввод-вывод и настраивает выводы
 void platform_init(void)
 {
@@ -49,6 +69,9 @@ void platform_init(void)
     uart_init(uart0, UART_BAUD);
     uart_init(uart1, UART_BAUD);
     platform_uart_loop_set(false);
+
+    irq_set_exclusive_handler(UART0_IRQ, on_uart0_rx);
+    irq_set_enabled(UART0_IRQ, true);
 }
 
 void platform_led_set(bool on)
@@ -125,6 +148,7 @@ void platform_uart_clear(platform_uart_t uart)
 
     // запись в UARTECR сбрасывает признаки ошибок
     uart_get_hw(u)->rsr = 0;
+    rx_count = 0;
 }
 
 bool platform_uart_put(platform_uart_t uart, uint8_t byte)
@@ -150,6 +174,11 @@ size_t platform_uart_read(platform_uart_t uart, uint8_t *data, size_t size)
 {
     uart_inst_t *u = uart_of(uart);
     size_t n = 0;
+
+    for (uint32_t i = 0; i < rx_count; ++i)
+    {
+        data[n++] = rx_buffer[i];
+    }
 
     while (uart_is_readable(u) && n < size)
     {
@@ -177,4 +206,10 @@ void platform_uart_parity_set(platform_uart_t uart, platform_parity_t parity)
         UART_PARITY_ODD,
     };
     uart_set_format(uart_of(uart), 8, 1, parities[parity]);
+}
+
+void platform_uart_rx_irq_set(bool on)
+{
+    // прерывание по четырём байтам в очереди и по паузе на линии
+    uart_set_irqs_enabled(uart0, on, false);
 }

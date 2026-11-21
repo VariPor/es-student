@@ -426,6 +426,42 @@ static void cmd_parity(const command_t *command)
     printf("parity: uart0 %s, uart1 %s\n", command->argv[0], command->argv[1]);
 }
 
+// блок команды block - 64 байта, вдвое диннее очереди приёма
+#define BLOCK_SIZE 64
+static uint8_t block_data[BLOCK_SIZE];
+static char block_mode[5];
+
+static void print_block(const uint8_t *data, size_t size, uint32_t errors)
+{
+    platform_uart_rx_irq_set(false);
+    bool match = size > 0;
+    match &= !memcmp(data, block_data, size);
+    printf("block %s: %u/64 %s, ", block_mode, size, match ? "match" : "mismatch");
+    print_errors(errors);
+}
+
+static void cmd_block(const command_t *command)
+{
+    if (command->argc != 1 || (strcmp(command->argv[0], "irq") != 0 &&
+                               strcmp(command->argv[0], "poll") != 0))
+    {
+        printf("error: usage block irq|poll");
+    }
+    for (uint8_t i = 0; i < BLOCK_SIZE; ++i)
+    {
+        block_data[i] = i;
+    }
+    bool on = strcmp(command->argv[0], "irq") == 0;
+    platform_uart_rx_irq_set(on);
+    strcpy(block_mode, command->argv[0]);
+    //block_mode[0] = command->argv[0][0];
+    if (!uart_task_start(PLATFORM_UART1, PLATFORM_UART0, block_data,
+                         BLOCK_SIZE, print_block))
+    {
+        printf("error: uart is busy\n");
+    }
+}
+
 const api_command_t api_commands[] = {
     {"info", "device passport", cmd_info},
     {"uptime", "time since reset", cmd_uptime},
@@ -444,6 +480,7 @@ const api_command_t api_commands[] = {
     {"link", "text from UART0 to UART1 and back: link <text>", cmd_link},
     {"baud_shift", "shift UART1 baud rate: baud_shift <percent>", cmd_baud_shift},
     {"text", "32 characters from UART1 to UART0", cmd_text},
-    {"parity", "parity of UART0 and UART1: parity <rx> <tx>", cmd_parity}};
+    {"parity", "parity of UART0 and UART1: parity <rx> <tx>", cmd_parity},
+    {"block", "64 bytes from UART1 to UART0: block irq|poll", cmd_block}};
 
 const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
