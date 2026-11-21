@@ -267,6 +267,7 @@ static void print_errors(uint32_t errors)
     {
         printf("OE ");
     }
+    printf("\n");
 }
 
 static void cmd_loop(const command_t *command)
@@ -314,14 +315,14 @@ static const char text_line[] = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 
 static void print_link_back(const uint8_t *data, size_t size, uint32_t errors)
 {
-    printf("1->0 ");
+    printf("1->0: ");
     print_bytes(data, size);
     print_errors(errors);
 }
 
 static void print_link_forth(const uint8_t *data, size_t size, uint32_t errors)
 {
-    printf("0->1 ");
+    printf("0->1: ");
     print_bytes(data, size);
     print_errors(errors);
     if (!uart_task_start(PLATFORM_UART1, PLATFORM_UART0,
