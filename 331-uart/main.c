@@ -12,6 +12,7 @@
 #include "platform/platform.h"
 #include "edge-task/edge-task.h"
 #include "uart-task/uart-task.h"
+#include "block-task/block-task.h"
 
 enum stopwatch_numbers
 {
@@ -21,7 +22,8 @@ enum stopwatch_numbers
     STOPWATCH_BUTTON,
     STOPWATCH_PI,
     STOPWATCH_EDGE,
-    STOPWATCH_UART
+    STOPWATCH_UART,
+    STOPWATCH_DMA,
 };
 
 int main()
@@ -42,6 +44,8 @@ int main()
     profiling_stopwatch_init(STOPWATCH_PI, "pi");
     profiling_stopwatch_init(STOPWATCH_EDGE, "edge");
     profiling_stopwatch_init(STOPWATCH_UART, "uart");
+    profiling_stopwatch_init(STOPWATCH_DMA, "dma");
+
     while (1)
     {
         profiling_start(STOPWATCH_LOOP);
@@ -65,6 +69,10 @@ int main()
         profiling_start(STOPWATCH_UART);
         uart_task_handle();
         profiling_stop(STOPWATCH_UART);
+
+        profiling_start(STOPWATCH_DMA);
+        block_task_handle();
+        profiling_stop(STOPWATCH_DMA);
 
         profiling_start(STOPWATCH_COMMAND);
         // принятая строка становится командой, команда - действием прибора

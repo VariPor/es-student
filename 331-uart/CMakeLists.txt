@@ -23,6 +23,7 @@ add_library(logic STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/pi-task/pi-task.c
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/edge-task/edge-task.c
     ${CMAKE_CURRENT_SOURCE_DIR}/logic/uart-task/uart-task.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/logic/block-task/block-task.c
 )
 
 target_include_directories(logic PUBLIC
@@ -52,6 +53,7 @@ target_link_libraries(platform PRIVATE
     pico_stdlib
     hardware_adc
     hardware_uart
+    hardware_dma
 )
 
 

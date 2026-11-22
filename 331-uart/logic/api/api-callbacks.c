@@ -16,6 +16,7 @@
 #include "platform/platform.h"
 #include "edge-task/edge-task.h"
 #include "uart-task/uart-task.h"
+#include "block-task/block-task.h"
 
 #define UART_CHARS_MAX 32
 
@@ -353,6 +354,8 @@ static void cmd_link(const command_t *command)
     }
 }
 
+#define UART_BAUD 115200
+
 static void cmd_baud_shift(const command_t *command)
 {
     int32_t percent;
@@ -369,7 +372,7 @@ static void cmd_baud_shift(const command_t *command)
     }
 
     uint32_t speed = platform_uart_baud_set(PLATFORM_UART1,
-                                            115200 * (100 + percent) / 100);
+                                            UART_BAUD * (100 + percent) / 100);
     printf("baud_shift: uart1 %lu baud\n", speed);
 }
 
@@ -454,9 +457,84 @@ static void cmd_block(const command_t *command)
     bool on = strcmp(command->argv[0], "irq") == 0;
     platform_uart_rx_irq_set(on);
     strcpy(block_mode, command->argv[0]);
-    //block_mode[0] = command->argv[0][0];
+    // block_mode[0] = command->argv[0][0];
     if (!uart_task_start(PLATFORM_UART1, PLATFORM_UART0, block_data,
                          BLOCK_SIZE, print_block))
+    {
+        printf("error: uart is busy\n");
+    }
+}
+
+// осциллограмма команды scope: блок АЦП на 8,2 мс и текст, который
+// помещается в него на самой медленной скорости
+#define SCOPE_SAMPLES PLATFORM_BLOCK_MAX
+#define SCOPE_BAUD_MIN 9600
+#define SCOPE_TEXT_MAX 4
+static uint32_t speed;
+static uint8_t scope_samples_text[SCOPE_TEXT_MAX];
+static uint32_t sample_errors;
+uint32_t scope_samples_text_len;
+
+// print_scope_rx(): запомнить принятое UART1 и признаки ошибок
+static void print_scope_rx(const uint8_t *data, size_t size, uint32_t errors)
+{
+    scope_samples_text_len = size;
+
+    memcpy(scope_samples_text, data, size);
+    sample_errors = errors;
+}
+
+// print_scope(): вернуть обоим модулям 115 200 бит/с;
+// scope: <отсчётов> samples, <частота> Hz, <скорость> baud, uart1 <принятое> <признаки>
+// затем отсчёты по 16 в строке через пробел, последней строкой scope: end
+static void print_scope(const uint16_t *samples, uint32_t count, uint32_t time_us)
+{
+    platform_uart_baud_set(PLATFORM_UART0, UART_BAUD);
+    platform_uart_baud_set(PLATFORM_UART1, UART_BAUD);
+    printf("scope: %lu samples, %u Hz, %lu baud, uart1 ",
+           count, PLATFORM_SAMPLE_RATE_HZ, speed);
+    print_bytes(scope_samples_text, scope_samples_text_len);
+    print_errors(sample_errors);
+    for (uint32_t i = 0; i < count; i++)
+    {
+        if (i % 16 == 0)
+        {
+            printf("\n");
+        }
+        printf("%u ", samples[i]);
+    }
+    printf("\n");
+    printf("scope: end\n");
+}
+
+// cmd_scope(): два аргумента, скорость 9600..115200 и текст до четырёх символов,
+// иначе error: usage scope <baud> <text>
+// скорость обоим модулям, захват с функцией print_scope;
+// захват не начат — вернуть 115 200 бит/с, error: adc busy;
+// передача UART0 → UART1 с функцией print_scope_rx
+static void cmd_scope(const command_t *command)
+{
+    if (command->argc != 2 ||
+        !parse_u32(command->argv[0], &speed) ||
+        strlen(command->argv[1]) > SCOPE_TEXT_MAX ||
+        speed < SCOPE_BAUD_MIN ||
+        speed > UART_BAUD)
+    {
+        printf("error: usage scope <baud> <text>\n");
+        return;
+    }
+    platform_uart_baud_set(PLATFORM_UART0, speed);
+    platform_uart_baud_set(PLATFORM_UART1, speed);
+    
+    if (!block_task_start(SCOPE_SAMPLES, print_scope))
+    {
+        platform_uart_baud_set(PLATFORM_UART0, UART_BAUD);
+        platform_uart_baud_set(PLATFORM_UART1, UART_BAUD);
+        printf("error: uart is busy\n");
+        return;
+    }
+    if (!uart_task_start(PLATFORM_UART0, PLATFORM_UART1, (uint8_t *)command->argv[1],
+                         strlen(command->argv[1]), print_scope_rx))
     {
         printf("error: uart is busy\n");
     }
@@ -481,6 +559,7 @@ const api_command_t api_commands[] = {
     {"baud_shift", "shift UART1 baud rate: baud_shift <percent>", cmd_baud_shift},
     {"text", "32 characters from UART1 to UART0", cmd_text},
     {"parity", "parity of UART0 and UART1: parity <rx> <tx>", cmd_parity},
-    {"block", "64 bytes from UART1 to UART0: block irq|poll", cmd_block}};
+    {"block", "64 bytes from UART1 to UART0: block irq|poll", cmd_block},
+    {"scope", "UART0 line to ADC: scope <baud> <text>", cmd_scope}};
 
 const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
